@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.js
 
-function App() {
-  const [count, setCount] = useState(0)
+import React from "react";
+import { BrowserRouter, Route, Link, Routes } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import ProductPage from "./pages/ProductPage";
+import SingleProductPage from "./pages/SingleProductPage";
+import CartPage from "./pages/CartPage";
+import AboutPage from "./pages/AboutPage";
+import PaymentPage from "./pages/PaymentPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import CustomerProfilePage from "./pages/CustomerProfilePage";
+import LoginPage from "./pages/LoginPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import RegisterPage from "./pages/RegisterPage";
+// App.js or any other JSX file
+import "./index.css";
 
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" exact Component={HomePage} />
+        <Route path="/products" exact Component={ProductPage} />
+        <Route path="/products/:id" exact Component={SingleProductPage} />
+        <Route path="/cart" exact Component={CartPage} />
+        <Route path="/about" exact Component={AboutPage} />
+        <Route path="/payment" exact Component={PaymentPage} />
+        <Route path="/admin" exact Component={AdminDashboardPage} />
+        <Route path="/profile" exact Component={CustomerProfilePage} />
+        <Route path="/login" exact Component={LoginPage} />
+        <Route path="/reset-password" exact Component={ResetPasswordPage} />
+        <Route path="/register" exact Component={RegisterPage} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
 
-export default App
+export default App;
