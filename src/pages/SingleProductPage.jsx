@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { BsCartPlus } from "react-icons/bs";
+import { CiHeart } from "react-icons/ci";
 import { useProductContext } from "../context/ProductContext";
+import { calculateSalePrice } from "../constant/Saleprice";
+import Reviews from "../components/Reviews";
 
 const SingleProductPage = () => {
   const { id } = useParams();
-  const { products } = useProductContext();
-  const product = products.find((product) => product._id === id);
+  const { loading, products } = useProductContext();
+  const singleProduct = products.find((product) => product._id === id);
 
   // initial selected color to the first color option
-  const [selectedColor, setSelectedColor] = useState(
-    product.variants[0]?.color || "",
-  );
+  const [selectedColor, setSelectedColor] = useState("");
   const [selectedDimension, setSelectedDimension] = useState("");
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(singleProduct?.stock === 0 ? 0 : 1);
+
   const handleColorSelection = (color) => {
     setSelectedColor(color);
   };
@@ -23,72 +26,120 @@ const SingleProductPage = () => {
   };
 
   const handleIncreaseQuantity = () => {
-    // to  Ensure quantity doesn't exceed available stock
-    setQuantity((prevQuantity) => Math.min(prevQuantity + 1, product.stock));
+    // Ensure quantity doesn't exceed available stock
+    setQuantity((prevQuantity) =>
+      Math.min(prevQuantity + 1, singleProduct.stock),
+    );
   };
 
   const handleDecreaseQuantity = () => {
-    // to  Ensure quantity doesn't go below 1
-    setQuantity((prevQuantity) => Math.max(prevQuantity - 1, 1));
+    // Ensure quantity doesn't go below 1
+    setQuantity((prevQuantity) =>
+      Math.max(prevQuantity - 1, singleProduct.stock === 0 ? 0 : 1),
+    );
   };
 
-  // Calculate the price to display based on color selection
-  const displayPrice = selectedColor
-    ? product.variants.find((v) => v.color === selectedColor)?.price ||
-      product.price
-    : product.price;
+  // Calculate price to display based on color selection
 
   return (
     <Container>
-      <ProductImages>
-        {product.images.map((image, index) => (
-          <img key={index} src={image} alt={`Product ${index + 1}`} />
-        ))}
-      </ProductImages>
-      <ProductInfo>
-        <h2>{product.name}</h2>
-        <Price>
-          {displayPrice ? `$${displayPrice}` : "Price not available"}
-        </Price>
-        <ColorPicker>
-          {product.variants.map((variant) => (
-            <ColorOption
-              key={variant._id}
-              color={variant.color}
-              onClick={() => handleColorSelection(variant.color)}
-              selected={selectedColor === variant.color}
-            />
-          ))}
-        </ColorPicker>
-        <SizePicker>
-          {product.dimensions.map((dimension) => (
-            <DimensionOption
-              key={dimension}
-              onClick={() => handleDimensionSelection(dimension)}
-              selected={selectedDimension === dimension}
+      {loading ? (
+        <div>Loading...</div>
+      ) : singleProduct ? (
+        <>
+          <div className="namewishlist">
+            <h2>{singleProduct.name}</h2>
+            <div className="wishlist-icon">
+              <CiHeart />
+            </div>
+          </div>
+          <ProductImages>
+            {singleProduct.images.map((image, index) => (
+              <img key={index} src={image} alt={`Product ${index + 1}`} />
+            ))}
+          </ProductImages>
+          <ProductInfo>
+            <Price>
+              {singleProduct.onSale ? (
+                <SalePrice>
+                  <span className="new-price">
+                    $
+                    {calculateSalePrice(
+                      selectedColor
+                        ? singleProduct.variants.find(
+                            (v) => v.color === selectedColor,
+                          )?.price || singleProduct.price
+                        : singleProduct.price,
+                    )}
+                  </span>
+                  <span className="old-price">
+                    $
+                    {selectedColor
+                      ? singleProduct.variants.find(
+                          (v) => v.color === selectedColor,
+                        )?.price || singleProduct.price
+                      : singleProduct.price}
+                  </span>
+                </SalePrice>
+              ) : singleProduct.price ? (
+                <span>
+                  $
+                  {selectedColor
+                    ? singleProduct.variants.find(
+                        (v) => v.color === selectedColor,
+                      )?.price || singleProduct.price
+                    : singleProduct.price}
+                </span>
+              ) : (
+                "Price not available"
+              )}
+            </Price>
+
+            <ColorPicker>
+              {singleProduct.variants.map((variant) => (
+                <ColorOption
+                  key={variant._id}
+                  color={variant.color}
+                  onClick={() => handleColorSelection(variant.color)}
+                  selected={selectedColor === variant.color}
+                />
+              ))}
+            </ColorPicker>
+            <SizePicker>
+              {singleProduct.dimensions.map((dimension) => (
+                <DimensionOption
+                  key={dimension}
+                  onClick={() => handleDimensionSelection(dimension)}
+                  selected={selectedDimension === dimension}
+                >
+                  {dimension}
+                </DimensionOption>
+              ))}
+            </SizePicker>
+            <QuantityControl>
+              Quantity: <button onClick={handleDecreaseQuantity}>-</button>
+              {quantity}
+              <button onClick={handleIncreaseQuantity}>+</button>
+            </QuantityControl>
+            <p>Availability: {singleProduct.stock} in stock </p>
+            <AddToCartButton
+              disabled={quantity <= 0 || !selectedColor || !selectedDimension}
             >
-              {dimension}
-            </DimensionOption>
-          ))}
-        </SizePicker>
-        <QuantityControl>
-          Quantity: <button onClick={handleDecreaseQuantity}>-</button>
-          {quantity}
-          <button onClick={handleIncreaseQuantity}>+</button>
-        </QuantityControl>
-        <AddToCartButton
-          disabled={quantity <= 0 || !selectedColor || !selectedDimension}
-        >
-          Add to Cart
-        </AddToCartButton>
-      </ProductInfo>
+              {singleProduct.stock === 0 ? "Out of Stock" : "Add to Cart"}
+            </AddToCartButton>
+          </ProductInfo>
+          <div className="productdetail">
+            <Reviews />
+          </div>
+        </>
+      ) : (
+        <div>Product not found.</div>
+      )}
     </Container>
   );
 };
 
-const Container = styled.div`
-  display: flex;
-`;
+const Container = styled.div``;
 
 const ProductImages = styled.div`
   flex: 1;
@@ -131,7 +182,8 @@ const SizePicker = styled.div`
 const DimensionOption = styled.span`
   margin-right: 10px;
   cursor: pointer;
-  text-decoration: ${(props) => (props.selected ? "underline" : "none")};
+  text-decoration: none;
+  border: ${(props) => (props.selected ? "2px solid black" : "none")};
 `;
 
 const QuantityControl = styled.div`
@@ -154,5 +206,18 @@ const AddToCartButton = styled.button`
 const Price = styled.div`
   margin-bottom: 10px;
 `;
+const SalePrice = styled.div`
+  margin: 0;
+  padding: 0;
+  .new-price {
+    font-weight: bold;
+    color: red;
+  }
 
+  .old-price {
+    text-decoration: line-through;
+    color: #666666;
+    margin-left: 5px;
+  }
+`;
 export default SingleProductPage;
