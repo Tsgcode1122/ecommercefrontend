@@ -6,6 +6,10 @@ import { CiHeart } from "react-icons/ci";
 import { useProductContext } from "../context/ProductContext";
 import { calculateSalePrice } from "../constant/Saleprice";
 import Reviews from "../components/Reviews";
+import ShareProduct from "../components/ShareProduct";
+import RelatedProducts from "../components/RelatedProducts";
+import AmountButtons from "../components/AmountButtons";
+import AddToCartButton from "../components/AddtoCartButton";
 
 const SingleProductPage = () => {
   const { id } = useParams();
@@ -16,7 +20,6 @@ const SingleProductPage = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedDimension, setSelectedDimension] = useState("");
   const [quantity, setQuantity] = useState(singleProduct?.stock === 0 ? 0 : 1);
-
   const handleColorSelection = (color) => {
     setSelectedColor(color);
   };
@@ -24,22 +27,26 @@ const SingleProductPage = () => {
   const handleDimensionSelection = (dimension) => {
     setSelectedDimension(dimension);
   };
+  const AddtoCart = () => {
+    const productPrice = singleProduct.onSale
+      ? calculateSalePrice(
+          selectedColor
+            ? singleProduct.variants.find((v) => v.color === selectedColor)
+                ?.price || singleProduct.price
+            : singleProduct.price,
+        )
+      : selectedColor
+        ? singleProduct.variants.find((v) => v.color === selectedColor)
+            ?.price || singleProduct.price
+        : singleProduct.price;
 
-  const handleIncreaseQuantity = () => {
-    // Ensure quantity doesn't exceed available stock
-    setQuantity((prevQuantity) =>
-      Math.min(prevQuantity + 1, singleProduct.stock),
-    );
+    console.log("Product ID:", singleProduct._id);
+    console.log("Product Name:", singleProduct.name);
+    console.log("Product Dimension:", selectedDimension);
+    console.log("Product Color:", selectedColor);
+    console.log("Product Quantity:", quantity);
+    console.log("Product price:", productPrice);
   };
-
-  const handleDecreaseQuantity = () => {
-    // Ensure quantity doesn't go below 1
-    setQuantity((prevQuantity) =>
-      Math.max(prevQuantity - 1, singleProduct.stock === 0 ? 0 : 1),
-    );
-  };
-
-  // Calculate price to display based on color selection
 
   return (
     <Container>
@@ -116,20 +123,21 @@ const SingleProductPage = () => {
                 </DimensionOption>
               ))}
             </SizePicker>
-            <QuantityControl>
-              Quantity: <button onClick={handleDecreaseQuantity}>-</button>
-              {quantity}
-              <button onClick={handleIncreaseQuantity}>+</button>
-            </QuantityControl>
+            <AmountButtons quantity={quantity} setQuantity={setQuantity} />
             <p>Availability: {singleProduct.stock} in stock </p>
             <AddToCartButton
-              disabled={quantity <= 0 || !selectedColor || !selectedDimension}
-            >
-              {singleProduct.stock === 0 ? "Out of Stock" : "Add to Cart"}
-            </AddToCartButton>
+              selectedColor={selectedColor}
+              selectedDimension={selectedDimension}
+              quantity={quantity}
+              singleProduct={singleProduct}
+            />
           </ProductInfo>
           <div className="productdetail">
             <Reviews />
+            <ShareProduct />
+          </div>
+          <div className="related">
+            <RelatedProducts />
           </div>
         </>
       ) : (
@@ -188,19 +196,6 @@ const DimensionOption = styled.span`
 
 const QuantityControl = styled.div`
   margin-bottom: 10px;
-`;
-
-const AddToCartButton = styled.button`
-  background-color: ${(props) => (props.disabled ? "gray" : "blue")};
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-
-  &:hover {
-    background-color: ${(props) => (props.disabled ? "gray" : "darkblue")};
-  }
 `;
 
 const Price = styled.div`

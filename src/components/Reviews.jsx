@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useReviewContext } from "../context/ReviewContext";
 import { Collapse, Tabs, Rate } from "antd";
 import styled from "styled-components";
+import CreateReview from "./CreateReview";
 
 const { Panel } = Collapse;
 
@@ -10,7 +11,11 @@ const Reviews = () => {
   const { id } = useParams();
   const { reviews, loading, getReviewsByProductId } = useReviewContext();
   const productReviews = getReviewsByProductId(id);
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { month: "short", day: "numeric", year: "numeric" };
+    return date.toLocaleDateString(undefined, options);
+  };
   const reviewEntails = () => {
     return (
       <Tabs defaultActiveKey="1">
@@ -25,6 +30,7 @@ const Reviews = () => {
                     <ReviewTitle>User Review</ReviewTitle>
                     <Rate disabled defaultValue={review.rating} />
                     <p>{review.comment}</p>
+                    <p>posted : {formatDate(review.createdAt)}</p>
                   </ReviewContent>
                 </ReviewItem>
               ))}
@@ -34,7 +40,7 @@ const Reviews = () => {
           )}
         </Tabs.TabPane>
         <Tabs.TabPane tab={<span>Write a review</span>} key="2">
-          {/* Add write a review component here */}
+          <CreateReview />
         </Tabs.TabPane>
       </Tabs>
     );
