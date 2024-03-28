@@ -5,6 +5,7 @@ import axios from "axios";
 const ProductContext = createContext();
 
 export const ProductProvider = ({ children }) => {
+  const [loading, setLoading] = useState(true);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -16,6 +17,7 @@ export const ProductProvider = ({ children }) => {
         setFeaturedProducts(
           response.data.filter((product) => product.isNewRelease),
         );
+        setLoading(false); // Set loading to false when data is fetched
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -25,7 +27,7 @@ export const ProductProvider = ({ children }) => {
   }, []);
 
   return (
-    <ProductContext.Provider value={{ products, featuredProducts }}>
+    <ProductContext.Provider value={{ loading, products, featuredProducts }}>
       {children}
     </ProductContext.Provider>
   );
