@@ -1,7 +1,9 @@
+import { setDriver } from "mongoose";
 import React, { createContext, useContext, useState, useEffect } from "react";
-
+import { useParams } from "react-router-dom";
 const CartContext = createContext();
 export const CartProvider = ({ children }) => {
+  const { id } = useParams();
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -15,27 +17,42 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product, color, dimension, currentPrice) => {
-    const existingItemIndex = cart.findIndex(
-      (item) =>
-        item.id === product._id &&
-        item.color === color &&
-        item.dimension === dimension,
-    );
+  const addToCart = (
+    singleProduct,
+    selectedColor,
+    quantity,
+    productPrice,
+    selectedDimension,
+  ) => {
+    const itemId = singleProduct._id + selectedColor + selectedDimension;
+    const existingItem = cart.find((item) => item.id === itemId);
 
-    if (existingItemIndex !== -1) {
-      const updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += 1;
+    if (existingItem) {
+      const updatedCart = cart.map((item) => {
+        if (
+          item.id === itemId &&
+          item.selectedColor === selectedColor &&
+          item.selectedDimension === selectedDimension
+        ) {
+          return {
+            ...item,
+            quantity: item.quantity + quantity,
+          };
+        } else {
+          return item;
+        }
+      });
       setCart(updatedCart);
     } else {
       const newItem = {
-        id: product._id,
-        name: product.name,
-        color,
-        dimension,
-        image,
-        price: currentPrice,
-        quantity: 1,
+        id: itemId,
+        name: singleProduct.name,
+        selectedColor,
+        selectedDimension,
+        productPrice,
+        image: singleProduct.images[0],
+        quantity,
+        stock: singleProduct.stock,
       };
       setCart([...cart, newItem]);
     }
@@ -49,12 +66,51 @@ export const CartProvider = ({ children }) => {
     setCart([]);
   };
 
+  const increaseQuantity = (itemId) => {
+    const selectedItem = cart.find((item) => item.id === itemId);
+    if (selectedItem.quantity < selectedItem.stock) {
+      const updatedCart = cart.map((item) => {
+        if (item.id === itemId) {
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        } else {
+          return item;
+        }
+      });
+      setCart(updatedCart);
+    }
+  };
+
+  const decreaseQuantity = (itemId) => {
+    const updatedCart = cart.map((item) => {
+      if (item.id === itemId && item.quantity > 1) {
+        return {
+          ...item,
+          quantity: item.quantity - 1,
+        };
+      } else {
+        return item;
+      }
+    });
+    setCart(updatedCart);
+  };
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        increaseQuantity,
+        decreaseQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>
   );
 };
+
 export const useCartContext = () => useContext(CartContext);

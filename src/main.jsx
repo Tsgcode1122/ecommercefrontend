@@ -5,15 +5,13 @@ import "./index.css";
 import { ProductProvider } from "./context/ProductContext.jsx";
 import { ReviewProvider } from "./context/ReviewContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
-
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <CartProvider>
-    <ProductProvider>
-      <ReviewProvider>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </ReviewProvider>
-    </ProductProvider>
-  </CartProvider>,
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <ProductProvider>
+    <ReviewProvider>
+      <CartProvider>
+        <App />
+      </CartProvider>
+    </ReviewProvider>
+  </ProductProvider>,
 );

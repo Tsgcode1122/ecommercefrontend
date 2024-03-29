@@ -9,7 +9,7 @@ import Reviews from "../components/Reviews";
 import ShareProduct from "../components/ShareProduct";
 import RelatedProducts from "../components/RelatedProducts";
 import AmountButtons from "../components/AmountButtons";
-import AddToCartButton from "../components/AddtoCartButton";
+import AddToCartButton from "../constant/AddToCartButton";
 
 const SingleProductPage = () => {
   const { id } = useParams();
@@ -26,26 +26,6 @@ const SingleProductPage = () => {
 
   const handleDimensionSelection = (dimension) => {
     setSelectedDimension(dimension);
-  };
-  const AddtoCart = () => {
-    const productPrice = singleProduct.onSale
-      ? calculateSalePrice(
-          selectedColor
-            ? singleProduct.variants.find((v) => v.color === selectedColor)
-                ?.price || singleProduct.price
-            : singleProduct.price,
-        )
-      : selectedColor
-        ? singleProduct.variants.find((v) => v.color === selectedColor)
-            ?.price || singleProduct.price
-        : singleProduct.price;
-
-    console.log("Product ID:", singleProduct._id);
-    console.log("Product Name:", singleProduct.name);
-    console.log("Product Dimension:", selectedDimension);
-    console.log("Product Color:", selectedColor);
-    console.log("Product Quantity:", quantity);
-    console.log("Product price:", productPrice);
   };
 
   return (
