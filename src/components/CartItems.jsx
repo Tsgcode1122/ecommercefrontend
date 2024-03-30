@@ -68,6 +68,8 @@ const ItemDetails = styled.div`
   margin-top: 5px;
   img {
     max-width: 100%;
+    width: 100px;
+    height: 100px;
   }
 `;
 

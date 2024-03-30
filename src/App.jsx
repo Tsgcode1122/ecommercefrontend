@@ -15,10 +15,13 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import RegisterPage from "./pages/RegisterPage";
 // App.js or any other JSX file
 import "./index.css";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Navbar />
+      3`7`
       <Routes>
         <Route path="/" exact Component={HomePage} />
         <Route path="/products" exact Component={ProductPage} />
