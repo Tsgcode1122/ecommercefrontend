@@ -1,4 +1,3 @@
-// ProductPage.jsx
 import React from "react";
 import { useProductContext } from "../context/ProductContext";
 import styled from "styled-components";
@@ -7,6 +6,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { calculateSalePrice } from "../constant/Saleprice";
+
 const ProductPage = () => {
   const { products } = useProductContext();
 
@@ -16,8 +16,12 @@ const ProductPage = () => {
 
       <ProductContainer>
         {products.map((product) => (
-          <Link to={`/products/${product._id}`} className="link">
-            <ProductCard key={product._id}>
+          <Link
+            to={`/products/${product._id}`}
+            className="link"
+            key={product._id}
+          >
+            <ProductCard>
               {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
               <img src={product.images[0]} alt={product.name} />
               <div className="icon-container">
@@ -45,9 +49,12 @@ const ProductPage = () => {
                   <p>${product.price}</p>
                 )}
               </div>
-              {product.stock === 0 && (
-                <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
-              )}
+
+              {product.variants.length > 0 &&
+                product.variants[0].sizes.length > 0 &&
+                product.variants[0].sizes[0].stock === 0 && (
+                  <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
+                )}
             </ProductCard>
           </Link>
         ))}

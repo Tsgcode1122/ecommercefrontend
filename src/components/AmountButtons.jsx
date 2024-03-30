@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import { useProductContext } from "../context/ProductContext";
-const AmountButtons = ({ quantity, setQuantity }) => {
+const AmountButtons = () => {
   const { id } = useParams();
   const { loading, products } = useProductContext();
   const singleProduct = products.find((product) => product._id === id);
-
+  const [quantity, setQuantity] = useState(singleProduct?.stock === 0 ? 0 : 1);
   const handleIncreaseQuantity = () => {
     // Ensure quantity doesn't exceed available stock
     setQuantity((prevQuantity) =>

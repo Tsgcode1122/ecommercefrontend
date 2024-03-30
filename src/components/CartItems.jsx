@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useCartContext } from "../context/CartContext";
+import AmountButtons from "../components/AmountButtons";
 
 const CartItems = () => {
   const { cart, increaseQuantity, decreaseQuantity } = useCartContext();
@@ -20,34 +21,24 @@ const CartItems = () => {
         {cart.map((item, index) => (
           <Item key={index}>
             <ItemDetails>
-              <ItemDetail>Name: {item.name}</ItemDetail>
+              <ItemDetail>Name: {item.productName}</ItemDetail>
               <ItemDetail>Color: {item.selectedColor}</ItemDetail>
-              <ItemDetail>Dimension: {item.selectedDimension}</ItemDetail>
-              <ItemDetail>Price: ${item.productPrice}</ItemDetail>
-              <ItemDetail>stock: ${item.stock}</ItemDetail>
+              <ItemDetail>Dimension: {item.selectedSize}</ItemDetail>
+              <ItemDetail>Price: ${item.displayedPrice}</ItemDetail>
+              <ItemDetail>Stock: {item.availableStock}</ItemDetail>
 
               <QuantityControl>
-                <button
-                  type="button"
-                  className="amount-btn"
-                  onClick={() => handleDecreaseQuantity(item.id)}
-                  disabled={item.quantity === 1}
-                >
+                <button onClick={() => handleDecreaseQuantity(item.id)}>
                   -
                 </button>
                 {item.quantity}
-                <button
-                  type="button"
-                  className="amount-btn"
-                  onClick={() => handleIncreaseQuantity(item.id)}
-                  disabled={item.quantity === item.stock}
-                >
+                <button onClick={() => handleIncreaseQuantity(item.id)}>
                   +
                 </button>
               </QuantityControl>
 
               <ItemDetail>
-                <img src={item.image} alt={item.name} />
+                <img src={item.productImage} alt={item.productName} />
               </ItemDetail>
             </ItemDetails>
           </Item>

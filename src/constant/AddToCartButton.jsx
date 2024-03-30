@@ -4,80 +4,124 @@ import { calculateSalePrice } from "../constant/Saleprice";
 import { useCartContext } from "../context/CartContext";
 
 const AddToCartButton = ({
-  selectedColor,
-  selectedDimension,
-  quantity,
   singleProduct,
+  selectedColor,
+  selectedSize,
+  quantity,
 }) => {
   const { addToCart, cart } = useCartContext();
-
   const handleAddToCart = () => {
-    const itemId = singleProduct._id + selectedColor + selectedDimension;
+    const getDisplayedPrice = (singleProduct, selectedColor, selectedSize) => {
+      const variant = singleProduct.variants.find(
+        (variant) => variant.color === selectedColor,
+      );
+      if (variant) {
+        const size = variant.sizes.find((size) => size.size === selectedSize);
+        if (size) {
+          const price = singleProduct.onSale
+            ? calculateSalePrice(size.price)
+            : size.price;
+          return price;
+        }
+      }
+      return "Price not available";
+    };
+
+    const getAvailableInStock = (
+      singleProduct,
+      selectedColor,
+      selectedSize,
+    ) => {
+      const variant = singleProduct.variants.find(
+        (variant) => variant.color === selectedColor,
+      );
+      if (variant) {
+        const size = variant.sizes.find((size) => size.size === selectedSize);
+        if (size) {
+          return size.stock;
+        }
+      }
+      return "Stock not available";
+    };
+    const displayedPrice = getDisplayedPrice(
+      singleProduct,
+      selectedColor,
+      selectedSize,
+    );
+    const availableStock = getAvailableInStock(
+      singleProduct,
+      selectedColor,
+      selectedSize,
+    );
+
+    const productDetails = {
+      singleProduct,
+      productName: singleProduct.name,
+      selectedColor,
+      selectedSize,
+      displayedPrice,
+      quantity,
+      productImage: singleProduct.images[0],
+      availableStock,
+    };
+    const itemId = singleProduct._id + selectedColor + selectedSize;
 
     const totalQuantityInCart = cart.reduce((total, item) => {
       if (
         item.id === itemId &&
         item.selectedColor === selectedColor &&
-        item.selectedDimension === selectedDimension
+        item.selectedSize === selectedSize
       ) {
         return total + item.quantity;
       }
       return total;
     }, 0);
 
-    const remainingStock = singleProduct.stock - totalQuantityInCart;
-
+    const remainingStock = availableStock - totalQuantityInCart;
+    console.log("Product added to cart:", productDetails);
     if (remainingStock > 0) {
-      const productPrice = singleProduct.onSale
-        ? calculateSalePrice(
-            selectedColor
-              ? singleProduct.variants.find((v) => v.color === selectedColor)
-                  ?.price || singleProduct.price
-              : singleProduct.price,
-          )
-        : selectedColor
-          ? singleProduct.variants.find((v) => v.color === selectedColor)
-              ?.price || singleProduct.price
-          : singleProduct.price;
-
-      const productImage = singleProduct.images[0];
-
       addToCart(
         singleProduct,
+
         selectedColor,
+        selectedSize,
+        displayedPrice,
+        quantity,
+
+        availableStock,
         Math.min(quantity, remainingStock),
-        productPrice,
-        selectedDimension,
-        productImage,
+        totalQuantityInCart,
       );
     } else {
       alert(
-        `You cannot add that amount to the cart - we have ${singleProduct.stock} in stock and you already have ${totalQuantityInCart} in your cart.`,
+        `You cannot add that amount to the cart - we have ${availableStock} in stock and you already have ${totalQuantityInCart} in your cart.`,
       );
     }
   };
 
+  // Function to get the displayed price based on selected color and size
+
+  const disableButton = () =>
+    selectedColor && selectedSize
+      ? singleProduct.variants
+          .find((variant) => variant.color === selectedColor)
+          ?.sizes.find((size) => size.size === selectedSize)?.stock === 0
+      : true;
   return (
-    <Button
-      disabled={quantity <= 0 || !selectedColor || !selectedDimension}
+    <button
+      type="button"
       onClick={handleAddToCart}
+      disabled={!selectedColor || !selectedSize || disableButton()}
     >
-      {singleProduct.stock === 0 ? "Out of Stock" : "Add to Cart"}
-    </Button>
+      {selectedColor && selectedSize
+        ? singleProduct.variants
+            .find((variant) => variant.color === selectedColor)
+            ?.sizes.find((size) => size.size === selectedSize)?.stock === 0
+          ? "Out of Stock"
+          : "Add to Cart"
+        : "Select Color & Size"}
+    </button>
   );
 };
-
-const Button = styled.button`
-  background-color: ${(props) => (props.disabled ? "gray" : "blue")};
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
-
-  &:hover {
-    background-color: ${(props) => (props.disabled ? "gray" : "darkblue")};
-  }
-`;
 
 export default AddToCartButton;
