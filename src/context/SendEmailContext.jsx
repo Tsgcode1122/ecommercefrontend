@@ -8,6 +8,7 @@ const SendEmailContext = createContext();
 export const SendEmailProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [responseData, setResponseData] = useState(null); // State to store response data
 
   const sendEmail = async (email) => {
     setLoading(true);
@@ -17,11 +18,12 @@ export const SendEmailProvider = ({ children }) => {
         "http://localhost:5005/api/email/send-verification-code",
         email,
       );
-      console.log(response.data); // Log success message or handle response
+      // Log success message or handle response
       localStorage.setItem(
         "verificationToken",
         JSON.stringify(response.data.token),
       );
+      console.log(response.data);
     } catch (error) {
       console.error("Error sending email:", error);
       setError(error.message || "An error occurred while sending the email");
@@ -30,11 +32,12 @@ export const SendEmailProvider = ({ children }) => {
     }
   };
 
-  // Expose the sendEmail function to the context value
+  // Expose the sendEmail function and response data to the context value
   const contextValue = {
     sendEmail,
     loading,
     error,
+    responseData, // Include responseData in the context value
   };
 
   return (
@@ -44,11 +47,13 @@ export const SendEmailProvider = ({ children }) => {
         SendEmailContext,
         SendEmailProvider,
         sendEmail,
+        responseData,
       }}
     >
       {children}
     </SendEmailContext.Provider>
   );
 };
+
 // Create a custom hook to use the SendEmailContext
 export const useSendEmail = () => useContext(SendEmailContext);

@@ -2,8 +2,28 @@ import React, { useState } from "react";
 import { Form, Input, Button, message, Modal } from "antd";
 import { useUserContext } from "../context/UserContext";
 import { useSendEmail } from "../context/SendEmailContext";
-
+import styled from "styled-components";
 import axios from "axios";
+
+const RegisterPageContainer = styled.div`
+  width: 400px;
+  margin: auto;
+  margin-top: 50px;
+`;
+
+const StyledInput = styled(Input)`
+  width: 100%;
+`;
+
+const StyledButton = styled(Button)`
+  width: 100%;
+`;
+
+const StyledModalInput = styled(Input)`
+  width: 100%;
+  margin-bottom: 10px;
+`;
+
 const RegisterPage = () => {
   const { registerUser } = useUserContext();
   const { sendEmail } = useSendEmail();
@@ -13,6 +33,7 @@ const RegisterPage = () => {
   const [existingProfile, setExistingProfile] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validatePassword = (_, value) => {
     if (!value || !/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) {
@@ -24,6 +45,7 @@ const RegisterPage = () => {
   };
 
   const onFinish = async (values) => {
+    setLoading(true);
     try {
       const emailExistsResponse = await axios.post(
         "http://localhost:5005/api/auth/check-exists",
@@ -31,43 +53,39 @@ const RegisterPage = () => {
           email: values.email,
         },
       );
-      // check for existing email
       if (emailExistsResponse.data.exists) {
         setExistingProfile(true);
-        return; // Exit early if the email already exists
+        setLoading(false);
+        return;
       }
-      // Send verification code to the email
       const response = await sendVerificationCode(values.email);
-      console.log(response);
-      const token = JSON.stringify(response.data);
-      localStorage.setItem("verificationToken", token);
-      setModalVisible(true); // Open the verification modal
+      setModalVisible(true);
+      message.success(
+        "Verification code sent, check your email and paste the code",
+      );
     } catch (error) {
       console.error("Error sending verification code:", error);
       message.error("Failed to send verification code");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerification = async () => {
     try {
-      // Validate the verification code
       if (!verificationCode) {
         message.error("Please enter the verification code");
         return;
       }
-      // Verify the code
-      const response = await verifyCode(verificationCode); // Added verificationCode parameter here
+      const response = await verifyCode(verificationCode);
       if (response && response.success) {
-        // If code is verified successfully, proceed with registration
         await registerUser(form.getFieldsValue());
         setExistingProfile(false);
         setRegistrationSuccess(true);
         message.success("Registration Successful");
         form.resetFields();
-
         setModalVisible(false);
       } else {
-        // If code is incorrect, show error message
         message.error("Invalid verification code");
       }
     } catch (error) {
@@ -77,17 +95,11 @@ const RegisterPage = () => {
   };
 
   const sendVerificationCode = async (email) => {
-    try {
-      await sendEmail({ email });
-      message.info("Verification code sent to your email");
-    } catch (error) {
-      throw error;
-    }
+    const response = await sendEmail({ email });
   };
 
   const verifyCode = async (verificationCode) => {
     try {
-      // Call your backend API to verify the code
       const response = await axios.post(
         "http://localhost:5005/api/email/verify-code",
         {
@@ -95,14 +107,14 @@ const RegisterPage = () => {
           token: JSON.parse(localStorage.getItem("verificationToken")),
         },
       );
-      return response.data; // Assuming your backend sends { success: true } if the code is correct
+      return response.data;
     } catch (error) {
       throw error;
     }
   };
 
   return (
-    <div style={{ width: "400px", margin: "auto", marginTop: "50px" }}>
+    <RegisterPageContainer>
       <Form
         form={form}
         name="register"
@@ -110,16 +122,14 @@ const RegisterPage = () => {
         scrollToFirstError
         layout="vertical"
       >
-        {/* Full Name */}
         <Form.Item
           name="fullName"
           label="Full Name"
           rules={[{ required: true, message: "Please enter your full name" }]}
         >
-          <Input />
+          <StyledInput />
         </Form.Item>
 
-        {/* Email */}
         <Form.Item
           name="email"
           label="Email"
@@ -128,10 +138,9 @@ const RegisterPage = () => {
             { required: true, message: "Please enter your email" },
           ]}
         >
-          <Input />
+          <StyledInput />
         </Form.Item>
 
-        {/* Phone Number */}
         <Form.Item
           name="phoneNumber"
           label="Phone Number"
@@ -143,10 +152,9 @@ const RegisterPage = () => {
             },
           ]}
         >
-          <Input />
+          <StyledInput />
         </Form.Item>
 
-        {/* Password */}
         <Form.Item
           name="password"
           label="Password"
@@ -156,10 +164,9 @@ const RegisterPage = () => {
             { validator: validatePassword },
           ]}
         >
-          <Input.Password />
+          <StyledInput.Password />
         </Form.Item>
 
-        {/* Confirm Password */}
         <Form.Item
           name="confirmPassword"
           label="Confirm Password"
@@ -177,25 +184,23 @@ const RegisterPage = () => {
             }),
           ]}
         >
-          <Input.Password />
+          <StyledInput.Password />
         </Form.Item>
 
-        {/* Submit Button */}
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <StyledButton type="primary" htmlType="submit" loading={loading}>
             Register
-          </Button>
+          </StyledButton>
         </Form.Item>
       </Form>
 
-      {/* Verification Modal */}
       <Modal
         title="Enter Verification Code"
         visible={modalVisible}
         onOk={handleVerification}
         onCancel={() => setModalVisible(false)}
       >
-        <Input
+        <StyledModalInput
           placeholder="Verification Code"
           value={verificationCode}
           onChange={(e) => setVerificationCode(e.target.value)}
@@ -208,7 +213,7 @@ const RegisterPage = () => {
       {existingProfile && (
         <p style={{ color: "red" }}>Profile already exists</p>
       )}
-    </div>
+    </RegisterPageContainer>
   );
 };
 

@@ -43,8 +43,8 @@ const Navbar = () => {
     <>
       <StyledNavbar>
         <MenuToggle onClick={toggleSidebar} />
-        {userData && <Link to="/login">login</Link>}
-        {!userData && <LogoutButton />}
+        {!userData && <Link to="/login">login</Link>}
+        {userData && <LogoutButton />}
 
         <Logo>
           <div>
