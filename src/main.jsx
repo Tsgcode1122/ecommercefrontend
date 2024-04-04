@@ -9,7 +9,7 @@ import { UserProvider } from "./context/UserContext.jsx";
 import { UserDataProvider } from "./context/UserDataContext.jsx";
 import { SendEmailProvider } from "./context/SendEmailContext.jsx";
 import { ForgetPasswordProvider } from "./context/forgetPasswordContext.jsx";
-import { ResetPasswordProvider } from "./context/resetPasswordContext.jsx";
+import { ResetPasswordProvider } from "./context/ResetPasswordContext.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(

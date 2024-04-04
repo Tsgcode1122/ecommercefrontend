@@ -32,13 +32,13 @@ export const UserProvider = ({ children }) => {
       throw new Error(error.response.data.message);
     }
   };
-  const forgotPassword = async (email, newPassword) => {
+  const forgotPassword = async (email) => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.post(
         "http://localhost:5005/api/auth/forgot-password",
-        { email, newPassword },
+        { email },
       );
       return response.data;
     } catch (error) {

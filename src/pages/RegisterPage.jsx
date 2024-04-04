@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, Button, message, Modal } from "antd";
 import { useUserContext } from "../context/UserContext";
 import { useSendEmail } from "../context/SendEmailContext";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 const RegisterPage = () => {
   const { registerUser } = useUserContext();
@@ -38,8 +38,9 @@ const RegisterPage = () => {
       }
       // Send verification code to the email
       const response = await sendVerificationCode(values.email);
-      // Store the token in local storage
-      localStorage.setItem("verificationToken", response.token);
+      console.log(response);
+      const token = JSON.stringify(response.data);
+      localStorage.setItem("verificationToken", token);
       setModalVisible(true); // Open the verification modal
     } catch (error) {
       console.error("Error sending verification code:", error);
@@ -77,9 +78,8 @@ const RegisterPage = () => {
 
   const sendVerificationCode = async (email) => {
     try {
-      const response = await sendEmail({ email });
+      await sendEmail({ email });
       message.info("Verification code sent to your email");
-      return response.data; // Return the response from the backend
     } catch (error) {
       throw error;
     }
@@ -90,7 +90,10 @@ const RegisterPage = () => {
       // Call your backend API to verify the code
       const response = await axios.post(
         "http://localhost:5005/api/email/verify-code",
-        { verificationCode },
+        {
+          verificationCode,
+          token: JSON.parse(localStorage.getItem("verificationToken")),
+        },
       );
       return response.data; // Assuming your backend sends { success: true } if the code is correct
     } catch (error) {

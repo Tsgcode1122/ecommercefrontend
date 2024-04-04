@@ -36,12 +36,13 @@ export const ResetPasswordProvider = ({ children }) => {
   };
 
   const contextValue = {
+    useResetSendEmail,
     loading,
     error,
   };
 
   return (
-    <ResetPasswordContext.Provider value={(contextValue, useResetSendEmail)}>
+    <ResetPasswordContext.Provider value={contextValue}>
       {children}
     </ResetPasswordContext.Provider>
   );

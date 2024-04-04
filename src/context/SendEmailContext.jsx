@@ -1,21 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 
+// Create the SendEmailContext
 const SendEmailContext = createContext();
 
+// Create the SendEmailProvider component
 export const SendEmailProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [verificationToken, setVerificationToken] = useState(null);
-
-  useEffect(() => {
-    if (verificationToken) {
-      localStorage.setItem(
-        "verificationToken",
-        JSON.stringify(verificationToken),
-      );
-    }
-  }, [verificationToken]);
 
   const sendEmail = async (email) => {
     setLoading(true);
@@ -25,8 +17,11 @@ export const SendEmailProvider = ({ children }) => {
         "http://localhost:5005/api/email/send-verification-code",
         email,
       );
-      setVerificationToken(response.data.token);
       console.log(response.data); // Log success message or handle response
+      localStorage.setItem(
+        "verificationToken",
+        JSON.stringify(response.data.token),
+      );
     } catch (error) {
       console.error("Error sending email:", error);
       setError(error.message || "An error occurred while sending the email");
@@ -35,6 +30,7 @@ export const SendEmailProvider = ({ children }) => {
     }
   };
 
+  // Expose the sendEmail function to the context value
   const contextValue = {
     sendEmail,
     loading,
@@ -42,10 +38,17 @@ export const SendEmailProvider = ({ children }) => {
   };
 
   return (
-    <SendEmailContext.Provider value={contextValue}>
+    <SendEmailContext.Provider
+      value={{
+        contextValue,
+        SendEmailContext,
+        SendEmailProvider,
+        sendEmail,
+      }}
+    >
       {children}
     </SendEmailContext.Provider>
   );
 };
-
+// Create a custom hook to use the SendEmailContext
 export const useSendEmail = () => useContext(SendEmailContext);
