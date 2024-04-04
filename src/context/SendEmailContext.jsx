@@ -10,7 +10,7 @@ export const SendEmailProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [responseData, setResponseData] = useState(null); // State to store response data
 
-  const sendEmail = async (email) => {
+  const ResetSendEmail = async (email) => {
     setLoading(true);
     setError(null);
     try {
@@ -34,7 +34,7 @@ export const SendEmailProvider = ({ children }) => {
 
   // Expose the sendEmail function and response data to the context value
   const contextValue = {
-    sendEmail,
+    ResetSendEmail,
     loading,
     error,
     responseData, // Include responseData in the context value
@@ -46,7 +46,7 @@ export const SendEmailProvider = ({ children }) => {
         contextValue,
         SendEmailContext,
         SendEmailProvider,
-        sendEmail,
+        ResetSendEmail,
         responseData,
       }}
     >

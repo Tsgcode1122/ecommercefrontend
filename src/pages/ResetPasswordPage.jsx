@@ -4,12 +4,15 @@ import { useUserContext } from "../context/UserContext";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useResetSendEmail } from "../context/ResetPasswordContext";
+import { useForgetPassword } from "../context/forgetPasswordContext";
+
 const ResetPasswordPage = () => {
   const { sendEmail } = useResetSendEmail();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const { forgotPassword } = useUserContext();
-  const { newPasswords } = useUserContext();
+  const { newPasswords } = useForgetPassword();
   const [loading, setLoading] = useState(false);
   const [noFound, setNoFound] = useState(false);
   const [verifySuccess, setVerifySuccess] = useState(false);
@@ -34,7 +37,7 @@ const ResetPasswordPage = () => {
       localStorage.setItem("resetEmail", JSON.stringify(email));
       setCodeModalVisible(true);
     } catch (error) {
-      console.error("no user:", error);
+      console.error(error);
       setNoFound(true);
     } finally {
       setLoading(false);
@@ -87,6 +90,11 @@ const ResetPasswordPage = () => {
   };
   const handleNewCode = async () => {
     try {
+      const email = JSON.parse(localStorage.getItem("resetEmail"));
+      if (!email) {
+        throw new Error("Email not found in localStorage");
+      }
+      console.log("email from local and inputed", email);
       const { newPassword, confirmPassword } = form.getFieldsValue();
       if (newPassword !== confirmPassword) {
         throw new Error("The two passwords do not match");
@@ -94,12 +102,7 @@ const ResetPasswordPage = () => {
 
       console.log("New password:", newPassword);
 
-      const email = JSON.parse(localStorage.getItem("resetEmail"));
-      if (!email) {
-        throw new Error("Email not found in localStorage");
-      }
-
-      await newPasswords(newPassword, email);
+      await newPasswords(email, newPassword);
       message.success("Password changed successfully");
       setNewPasswordModalVisible(false);
       navigate("/");

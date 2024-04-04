@@ -17,7 +17,7 @@ export const ResetPasswordProvider = ({ children }) => {
     }
   }, [verificationToken]);
 
-  const useResetSendEmail = async (email) => {
+  const sendEmail = async (email) => {
     setLoading(true);
     setError(null);
     try {
@@ -36,13 +36,12 @@ export const ResetPasswordProvider = ({ children }) => {
   };
 
   const contextValue = {
-    useResetSendEmail,
     loading,
     error,
   };
 
   return (
-    <ResetPasswordContext.Provider value={contextValue}>
+    <ResetPasswordContext.Provider value={{ contextValue, sendEmail }}>
       {children}
     </ResetPasswordContext.Provider>
   );

@@ -8,14 +8,16 @@ export const ForgetPasswordProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const forgotPassword = async (email, newPassword) => {
+  const newPasswords = async (email, newPassword) => {
+    console.log(email, newPassword);
     setLoading(true);
     setError(null);
     try {
       const response = await axios.post(
-        "http://localhost:5005/api/auth/forgot-password",
+        "http://localhost:5005/api/auth/new-password",
         { email, newPassword },
       );
+      console.log(response.data);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data.message);
@@ -24,14 +26,8 @@ export const ForgetPasswordProvider = ({ children }) => {
     }
   };
 
-  const contextValue = {
-    forgotPassword,
-    loading,
-    error,
-  };
-
   return (
-    <ForgetPasswordContext.Provider value={contextValue}>
+    <ForgetPasswordContext.Provider value={{ loading, error, newPasswords }}>
       {children}
     </ForgetPasswordContext.Provider>
   );
