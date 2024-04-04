@@ -92,9 +92,12 @@ const AddToCartButton = ({
         Math.min(quantity, remainingStock),
         totalQuantityInCart,
       );
+
+      // Add to cart logic here
+      alert(`Added ${quantity} ${singleProduct.name} to cart.`);
     } else {
       alert(
-        `You cannot add that amount to the cart - we have ${availableStock} in stock and you already have ${totalQuantityInCart} in your cart.`,
+        `You cannot add that amount to the cart - we have ${availableStock} in stock and check cart`,
       );
     }
   };
