@@ -14,7 +14,7 @@ const TotalInCart = () => {
     setTotalQuantity(newTotalQuantity);
   }, [cart]);
 
-  return <div>{totalQuantity} </div>;
+  return totalQuantity;
 };
 
 export default TotalInCart;

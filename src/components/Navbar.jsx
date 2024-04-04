@@ -8,8 +8,7 @@ import LogoutButton from "./LogoutButton";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const { userData } = useUserData(); // Retrieve userData from UserData context
-  console.log(userData);
+  const { userData } = useUserData(); // Retrieve userData from UserData
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
 

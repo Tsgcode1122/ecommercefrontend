@@ -83,7 +83,11 @@ const CartItems = ({ closeSidebar }) => {
               </Item>
             ))}
             {/* calculate total price */}
-            <TotalPrice>Total Price: ${calculateTotalPrice()}</TotalPrice>
+            <p>
+              total price will be calculated after shipping and coupon(if
+              applicable) is calculated, proceed to checkout...
+            </p>
+            <TotalPrice>Sub total Price: ${calculateTotalPrice()}</TotalPrice>
             {/* clear all cart */}
             <button onClick={clearCart}>Clear all cart</button>
           </>
