@@ -6,14 +6,14 @@ import axios from "axios";
 import ReturningCustomerLogin from "./ReturningCustomerLogin";
 import CryptoJS from "crypto-js";
 import { useUserData } from "../context/UserDataContext";
+
 const Checkout = () => {
-  const userDatas = useUserData();
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [loginDropdownVisible, setLoginDropdownVisible] = useState(false);
-
+  const { userData } = useUserData();
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -79,11 +79,10 @@ const Checkout = () => {
     <Container>
       <h2>Checkout</h2>
       <LoginForm>
-        {!userDatas && (
+        {!userData && (
           <p>
             Returning customer?{" "}
             <Link
-              to="#"
               onClick={(e) => {
                 e.preventDefault();
                 setLoginDropdownVisible(!loginDropdownVisible);
@@ -94,7 +93,6 @@ const Checkout = () => {
             {loginDropdownVisible && <ReturningCustomerLogin />}
           </p>
         )}
-
         <Form form={form} onFinish={handleSubmit}>
           <Form.Item
             label="Full Name"

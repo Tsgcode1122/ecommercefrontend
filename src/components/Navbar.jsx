@@ -8,7 +8,7 @@ import LogoutButton from "./LogoutButton";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const userData = useUserData(); // Retrieve userData from UserData context
+  const { userData } = useUserData(); // Retrieve userData from UserData context
   console.log(userData);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef(null);
@@ -43,15 +43,13 @@ const Navbar = () => {
     <>
       <StyledNavbar>
         <MenuToggle onClick={toggleSidebar} />
-        {!userData && <Link to="/login">login</Link>}
-        {userData && <LogoutButton />}
+
+        {/* Conditionally render login/logout link */}
+        {userData ? <LogoutButton /> : <Link to="/login">Login</Link>}
 
         <Logo>
-          <div>
-            <h3>{userData.fullName}</h3>
-          </div>
+          <div>{userData && <h3>{userData.fullName}</h3>}</div>
         </Logo>
-        <Logo>{/* i want the user name from the local storage here */}</Logo>
         <CartIcon onClick={toggleSidebar}>
           <CartIconInner>
             <CartIconImage src={cart} alt="Cart" />
