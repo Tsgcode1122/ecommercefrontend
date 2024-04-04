@@ -38,7 +38,7 @@ const RegisterNowText = styled.span`
   margin-top: 10px;
 `;
 
-const LoginPage = () => {
+const ReturningCustomerLogin = ({ visible, setVisible }) => {
   const { loginUser } = useUserContext();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -58,8 +58,8 @@ const LoginPage = () => {
       // Store token and encrypted user data in local storage
       localStorage.setItem("token", token);
       localStorage.setItem("user", encryptedUserData);
-      navigate("/");
       window.location.reload();
+      // Redirect to home page after successful login
     } catch (error) {
       console.error("Error logging in:", error.message);
       message.error(error.message);
@@ -108,12 +108,12 @@ const LoginPage = () => {
         </Form.Item>
 
         {/* Register Now */}
-        <RegisterNowText>
+        {/* <RegisterNowText>
           Don't have an account? <Link to="/register">Register Now</Link>
-        </RegisterNowText>
+        </RegisterNowText> */}
       </LoginForm>
     </LoginPageContainer>
   );
 };
 
-export default LoginPage;
+export default ReturningCustomerLogin;

@@ -15,10 +15,13 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import RegisterPage from "./pages/RegisterPage";
 // App.js or any other JSX file
 import "./index.css";
+import Navbar from "./components/Navbar";
+import Checkout from "./components/CheckOut";
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" exact Component={HomePage} />
         <Route path="/products" exact Component={ProductPage} />
@@ -31,6 +34,7 @@ const App = () => {
         <Route path="/login" exact Component={LoginPage} />
         <Route path="/reset-password" exact Component={ResetPasswordPage} />
         <Route path="/register" exact Component={RegisterPage} />
+        <Route path="/checkout" exact Component={Checkout} />
       </Routes>
     </BrowserRouter>
   );
