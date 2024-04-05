@@ -78,7 +78,7 @@ const AddToCartButton = ({
     }, 0);
 
     const remainingStock = availableStock - totalQuantityInCart;
-    console.log("Product added to cart:", productDetails);
+
     if (remainingStock > 0) {
       addToCart(
         singleProduct,
@@ -94,10 +94,10 @@ const AddToCartButton = ({
       );
 
       // Add to cart logic here
-      alert(`Added ${quantity} ${singleProduct.name} to cart.`);
+      // alert(`Added ${quantity} ${singleProduct.name} to cart.`);
     } else {
       alert(
-        `You cannot add that amount to the cart - we have ${availableStock} in stock and check cart`,
+        `You cannot add that amount to the cart - we have ${availableStock} in stock and you have ${availableStock} in your cart  `,
       );
     }
   };

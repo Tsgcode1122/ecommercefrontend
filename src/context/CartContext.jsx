@@ -34,8 +34,11 @@ export const CartProvider = ({ children }) => {
           const newQuantity = item.quantity + quantity;
           if (newQuantity > availableStock) {
             alert(
-              `Cannot add more than available stock (${availableStock}) you have (${totalQuantityInCart}) in your cart already`,
+              `Cannot add more than available stock (${availableStock}) you have (${
+                availableStock - totalQuantityInCart
+              }) in your cart already`,
             );
+
             return item;
           } else {
             return {

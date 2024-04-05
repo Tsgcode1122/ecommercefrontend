@@ -66,9 +66,6 @@ const SingleProductPage = () => {
       setQuantity(selectedVariant.stock); // Set quantity to available stock
       return;
     }
-
-    // Add to cart logic here
-    alert(`Added ${quantity} ${singleProduct.name} to cart.`);
   };
   const disableButton = () =>
     selectedColor && selectedSize

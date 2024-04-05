@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useCartContext } from "../context/CartContext";
 import CouponCodeForm from "./CouponCodeForm";
 import TotalInCart from "./TotalInCart";
 import useTotalPrice from "./useTotalPrice";
 
-const CartItemCheckoutSummary = ({ closeSummary }) => {
+const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
   const [discount, setDiscount] = useState(0);
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useCartContext();
@@ -13,7 +13,7 @@ const CartItemCheckoutSummary = ({ closeSummary }) => {
 
   const totalPrice = useTotalPrice(cart, discount);
 
-  let couponValid = 5;
+  let couponValid = 3;
 
   // Function to apply the coupon code and calculate the discount
   const applyCoupon = (couponCode) => {
@@ -30,8 +30,6 @@ const CartItemCheckoutSummary = ({ closeSummary }) => {
       alert("Invalid coupon code.");
     }
   };
-
-  // Function to handle quantity changes
 
   // handle increase
   const handleIncreaseQuantity = (itemId) => {
@@ -60,12 +58,14 @@ const CartItemCheckoutSummary = ({ closeSummary }) => {
       alert("Coupon discount has been removed due to quantity change.");
     }
   };
-
+  // Update total price in parent component
+  useEffect(() => {
+    setTotalPrice(totalPrice);
+  }, [totalPrice, setTotalPrice]);
   return (
     <Container>
       <h2>Cart Summary</h2>
-      {/* Render CouponCodeForm component */}
-      <CouponCodeForm applyCoupon={applyCoupon} />
+
       <ItemList>
         {cart.map((item, index) => (
           <Item key={index}>
@@ -98,10 +98,11 @@ const CartItemCheckoutSummary = ({ closeSummary }) => {
           </Item>
         ))}
       </ItemList>
-      <TotalPrice>
-        Total Price: ${totalPrice} {/* Display total price after discount */}
-      </TotalPrice>
-      <CloseButton onClick={closeSummary}>Close Summary</CloseButton>
+      {/* Render CouponCodeForm component */}
+      <CouponCodeForm applyCoupon={applyCoupon} />
+      <hr />
+
+      <TotalPrice>Total Price: ${totalPrice}</TotalPrice>
     </Container>
   );
 };

@@ -1,17 +1,18 @@
+// Checkout.js
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Form, Input, Select, Button } from "antd";
+import { Form, Input, Select, Button, message } from "antd";
 import axios from "axios";
-
+import ShippingForm from "./ShippingForm";
 import ReturningCustomerLogin from "./ReturningCustomerLogin";
 import CryptoJS from "crypto-js";
 import { useUserData } from "../context/UserDataContext";
 import { useCartContext } from "../context/CartContext";
 import CartItemCheckoutSummary from "./CartItemCheckoutSummary";
-import useTotalPrice from "./useTotalPrice"; // Import the useTotalPrice hook
+import PaymentMethod from "../../payment/PaymentMethod";
 
-const Checkout = ({ total, discount }) => {
+const Checkout = () => {
   const { cart } = useCartContext();
   const { userData } = useUserData();
 
@@ -22,6 +23,9 @@ const Checkout = ({ total, discount }) => {
   const [selectedState, setSelectedState] = useState("");
   const [loginDropdownVisible, setLoginDropdownVisible] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [payOnDeliveryOption, setPayOnDeliveryOption] = useState(null);
+  const [totalPrice, setTotalPrice] = useState();
 
   useEffect(() => {
     fetchCountries();
@@ -77,44 +81,46 @@ const Checkout = ({ total, discount }) => {
     fetchStates(value);
   };
 
-  const handleSubmit = (values) => {
-    console.log("Form values:", values);
+  const handleSubmit = async (values) => {
+    try {
+      await form.validateFields(); // Validate all form fields
 
-    // Map cart items with unique keys
-    cart.forEach((item, index) => {
-      console.log(`Order ${index + 1}:`);
-      console.log("Name:", item.productName);
-      console.log("Details:", {
-        Color: item.selectedColor,
-        Size: item.selectedSize,
-        Price: item.displayedPrice,
-        Quantity: item.quantity,
-        Image: item.productImage,
+      // Check if payment method and shipping method are selected
+      if (!paymentMethod || !payOnDeliveryOption) {
+        message.error("Please select payment and shipping methods");
+        return;
+      }
+
+      console.log("Form values:", values);
+      console.log("Payment Method:", paymentMethod);
+      console.log("Pay on Delivery Option:", payOnDeliveryOption);
+      console.log("total price", totalPrice);
+      // Map cart items with unique keys
+      cart.forEach((item, index) => {
+        console.log(`Order ${index + 1}:`);
+        console.log("Name:", item.productName);
+        console.log("Details:", {
+          Color: item.selectedColor,
+          Size: item.selectedSize,
+          Price: item.displayedPrice,
+          Quantity: item.quantity,
+          Image: item.productImage,
+        });
       });
-    });
 
-    // Retrieve total price from local storage
-    const totalPriceFromStorage = localStorage.getItem("encryptedTotalPrice");
-    if (totalPriceFromStorage) {
-      // Decrypt the total price
-      const bytes = CryptoJS.AES.decrypt(
-        totalPriceFromStorage,
-        "b2116e7e6e4646b3713b7c3f225729987baedc5c98dbefc6b2d4cfc9ee246eb5",
-      );
-      const decryptedTotalPrice = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-      console.log("Total Price from storage:", decryptedTotalPrice);
-    }
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        // Decrypt user data
+        const bytes = CryptoJS.AES.decrypt(
+          userData,
+          "b2116e7e6e4646b3713b7c3f225729987baedc5c98dbefc6b2d4cfc9ee246eb5",
+        );
+        const decryptedUserData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      // Decrypt user data
-      const bytes = CryptoJS.AES.decrypt(
-        userData,
-        "b2116e7e6e4646b3713b7c3f225729987baedc5c98dbefc6b2d4cfc9ee246eb5",
-      );
-      const decryptedUserData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-
-      console.log("User ID:", decryptedUserData._id);
+        console.log("User ID:", decryptedUserData._id);
+      }
+    } catch (error) {
+      console.error("Validation failed:", error);
     }
   };
 
@@ -202,7 +208,10 @@ const Checkout = ({ total, discount }) => {
               label="Street Address"
               name="streetAddress"
               rules={[
-                { required: true, message: "Please enter your street address" },
+                {
+                  required: true,
+                  message: "Please enter your street address",
+                },
               ]}
             >
               <Input />
@@ -220,7 +229,14 @@ const Checkout = ({ total, discount }) => {
               label="Phone"
               name="phone"
               rules={[
-                { required: true, message: "Please enter your phone number" },
+                {
+                  required: true,
+                  message: "Please enter your phone number",
+                },
+                {
+                  pattern: /^[0-9]*$/,
+                  message: "Please enter a valid phone number",
+                },
               ]}
             >
               <Input />
@@ -229,7 +245,10 @@ const Checkout = ({ total, discount }) => {
               label="Email Address"
               name="email"
               rules={[
-                { required: true, message: "Please enter your email address" },
+                {
+                  required: true,
+                  message: "Please enter your email address",
+                },
                 {
                   type: "email",
                   message: "Please enter a valid email address",
@@ -244,12 +263,22 @@ const Checkout = ({ total, discount }) => {
             <ViewSummaryButton onClick={toggleSummary}>
               View Summary
             </ViewSummaryButton>
-            {showSummary && (
-              <CartItemCheckoutSummary closeSummary={toggleSummary} />
-            )}
+
+            <CartItemCheckoutSummary
+              totalPrice={totalPrice}
+              setTotalPrice={setTotalPrice}
+              closeSummary={toggleSummary}
+            />
+
+            <ShippingForm
+              onPaymentMethodChange={setPaymentMethod}
+              onPayOnDeliveryOptionChange={setPayOnDeliveryOption}
+            />
+            <hr />
+            <PaymentMethod total={totalPrice} setTotalPrice={setTotalPrice} />
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Proceed to payment
+                Proceed to payment ${totalPrice}
               </Button>
             </Form.Item>
           </Form>
@@ -273,14 +302,6 @@ const ViewSummaryButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-`;
-
-const ReturningCustomerLoginContainer = styled.div`
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1;
-  width: 100%;
 `;
 
 export default Checkout;
