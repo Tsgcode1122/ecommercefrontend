@@ -11,11 +11,21 @@ import { useUserData } from "../context/UserDataContext";
 import { useCartContext } from "../context/CartContext";
 import CartItemCheckoutSummary from "./CartItemCheckoutSummary";
 import PaymentMethod from "../../payment/PaymentMethod";
+import StripePaymentModal from "../../payment/StripePaymentModal";
+import { loadStripe } from "@stripe/stripe-js";
+import { useNavigate } from "react-router-dom";
+
+import { CardElement, useStripe, Elements } from "@stripe/react-stripe-js";
+import DirectTransfer from "../../payment/DirectTransfer";
+
+const stripePromise = loadStripe(
+  "pk_test_51OuEOcP5VD7BOW3SqV5IuUrwEjGl5KoH8uzQrxHEbGjDqUk8Pf6CuKCR0W5gYIeZI392vqhQI6KTJflhl0rTcxPr00BWkzDpIb",
+);
 
 const Checkout = () => {
   const { cart } = useCartContext();
   const { userData } = useUserData();
-
+  const navigate = useNavigate();
   const { TextArea } = Input;
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -26,7 +36,8 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [payOnDeliveryOption, setPayOnDeliveryOption] = useState(null);
   const [totalPrice, setTotalPrice] = useState();
-
+  const [showStripeModal, setShowStripeModal] = useState(false);
+  const [showDirectModal, setShowDirectModal] = useState(false);
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -80,35 +91,91 @@ const Checkout = () => {
     setSelectedCountry(value);
     fetchStates(value);
   };
-
-  const handleSubmit = async (values) => {
+  const handleModal = async (values) => {
     try {
       await form.validateFields(); // Validate all form fields
 
-      // Check if payment method and shipping method are selected
-      if (!paymentMethod || !payOnDeliveryOption) {
-        message.error("Please select payment and shipping methods");
+      // Check if payment method is selected
+      if (!paymentMethod) {
+        message.error("Please select a payment method");
         return;
       }
 
-      console.log("Form values:", values);
-      console.log("Payment Method:", paymentMethod);
-      console.log("Pay on Delivery Option:", payOnDeliveryOption);
-      console.log("total price", totalPrice);
-      // Map cart items with unique keys
-      cart.forEach((item, index) => {
-        console.log(`Order ${index + 1}:`);
-        console.log("Name:", item.productName);
-        console.log("Details:", {
-          Color: item.selectedColor,
-          Size: item.selectedSize,
-          Price: item.displayedPrice,
-          Quantity: item.quantity,
-          Image: item.productImage,
-        });
-      });
+      if (paymentMethod === "stripe") {
+        setShowStripeModal(true);
+      } else if (paymentMethod === "directTransfer") {
+        setShowDirectModal(true);
+      } else {
+        // Handle other payment methods
+        // For example, pay on delivery, etc.
+      }
+    } catch (error) {
+      console.error("modal:", error);
+      message.error("kindly fill all the form to proceed");
+    }
+  };
+  const handleCloseModal = () => {
+    setShowStripeModal(false);
+  };
+  const handleDirectModal = () => {
+    setShowDirectModal(false);
+  };
 
+  const handleSubmit = async (paymentMethod, values) => {
+    console.log(values);
+    console.log(paymentMethod);
+    const amountInCents = totalPrice * 100;
+
+    event.preventDefault();
+    try {
+      await form.validateFields(); // Validate all form fields
+      const { id, card, billing_details } = paymentMethod;
+      const { brand, exp_month, exp_year, last4 } = card;
+      const { address, email, name, phone } = billing_details;
+      const response = await axios.post(
+        "http://localhost:5005/api/payments/create-payment-intent",
+        {
+          amount: amountInCents,
+          currency: "USD",
+          email: values.email,
+          paymentMethod: {
+            id: id,
+            brand: brand,
+            exp_month: exp_month,
+            exp_year: exp_year,
+            last4: last4,
+            billing_details: {
+              address: address,
+              email: email,
+              name: name,
+              phone: phone,
+            },
+          },
+        },
+      );
+      console.log(response.data);
+      if (!response) {
+        console.error("Payment confirmation error:", error);
+
+        message.error("Payment failed. Please try again.");
+      } else {
+        // Payment successful
+        console.log("Payment successful");
+
+        await sendOrderDetailsToBackend(values);
+      }
+    } catch (error) {
+      console.error("Payment processing error:", error);
+      // Handle validation or other errors
+      message.error("Payment processing error. Please try again.");
+    }
+  };
+
+  const sendOrderDetailsToBackend = async (values) => {
+    try {
+      // Fetch user data from local storage
       const userData = localStorage.getItem("user");
+      let userId = null;
       if (userData) {
         // Decrypt user data
         const bytes = CryptoJS.AES.decrypt(
@@ -117,10 +184,48 @@ const Checkout = () => {
         );
         const decryptedUserData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 
-        console.log("User ID:", decryptedUserData._id);
+        userId = decryptedUserData._id;
+      }
+
+      const orderData = {
+        userId: userId,
+        paymentMethod: paymentMethod,
+        payOnDeliveryOption: payOnDeliveryOption,
+        totalPrice: totalPrice,
+        cartItems: cart.map((item, index) => ({
+          name: item.productName,
+          details: {
+            Color: item.selectedColor,
+            Size: item.selectedSize,
+            Price: item.displayedPrice,
+            Quantity: item.quantity,
+            Image: item.productImage,
+          },
+        })),
+        formData: values,
+      };
+      console.log(orderData);
+
+      const response = await axios.post(
+        "http://localhost:5005/api/orders",
+        orderData,
+      );
+
+      if (response.status === 201) {
+        // Clear cart data from local storage
+        localStorage.removeItem("cart");
+        // Close the modal
+        handleCloseModal();
+
+        message.success("Order placed successfully!");
+        navigate("/");
+      } else {
+        message.error("Failed to create order. Please try again.");
       }
     } catch (error) {
-      console.error("Validation failed:", error);
+      console.error("Error sending order details to backend:", error);
+      // Handle error
+      message.error("Error placing order. Please try again.");
     }
   };
 
@@ -148,7 +253,7 @@ const Checkout = () => {
               {loginDropdownVisible && <ReturningCustomerLogin />}
             </p>
           )}
-          <Form form={form} onFinish={handleSubmit}>
+          <Form form={form}>
             <Form.Item
               label="Full Name"
               name="fullName"
@@ -275,14 +380,37 @@ const Checkout = () => {
               onPayOnDeliveryOptionChange={setPayOnDeliveryOption}
             />
             <hr />
-            <PaymentMethod total={totalPrice} setTotalPrice={setTotalPrice} />
+            <PaymentMethod
+              total={totalPrice}
+              setTotalPrice={setTotalPrice}
+              onPaymentMethodChange={setPaymentMethod}
+            />
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" onClick={handleModal}>
                 Proceed to payment ${totalPrice}
               </Button>
             </Form.Item>
           </Form>
         </LoginForm>
+        {showStripeModal && (
+          <Elements stripe={stripePromise}>
+            <StripePaymentModal
+              totalPrice={totalPrice}
+              handleSubmit={handleSubmit}
+              onClose={handleCloseModal}
+              values={form.getFieldsValue()}
+            />
+          </Elements>
+        )}
+        {showDirectModal && (
+          <DirectTransfer
+            totalPrice={totalPrice}
+            handleDirectSubmit={handleSubmit}
+            sendOrderDetailsToBackend={sendOrderDetailsToBackend}
+            onClose={handleDirectModal}
+            values={form.getFieldsValue()}
+          />
+        )}
       </Container>
     </>
   );

@@ -57,7 +57,7 @@ const CheckoutForm = () => {
   );
 };
 
-const Checkout = () => {
+const StripePayment = () => {
   return (
     <Elements stripe={stripePromise}>
       <CheckoutForm />
@@ -100,4 +100,4 @@ const ErrorMessage = styled.div`
   margin-top: 10px;
 `;
 
-export default Checkout;
+export default StripePayment;

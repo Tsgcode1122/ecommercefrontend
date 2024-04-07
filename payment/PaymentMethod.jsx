@@ -1,39 +1,38 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import PaypalPayment from "./PaypalPayment";
-import StripePayment from "./StripePayment";
-import PaystackPayment from "./PaystackPayment";
-import paypal from "./images/paypal.png";
-import stripe from "./images/stripe.png";
-import paystack from "./images/paystackii.png";
-import { AiOutlineCheck } from "react-icons/ai"; // Import check icon from react-icons
 
-const PaymentMethod = ({ totalPrice }) => {
+import stripe from "./images/stripe.png";
+import bank from "./images/bank.png";
+
+import { AiOutlineCheck } from "react-icons/ai"; // Import check icon from react-icons
+import DirectTransfer from "./DirectTransfer";
+
+const PaymentMethod = ({
+  totalPrice,
+  onPaymentMethodChange,
+  showStripeModal,
+  showDirectModal,
+}) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
   const handlePaymentMethodChange = (value) => {
     setSelectedPaymentMethod(value);
+    onPaymentMethodChange(value);
   };
 
   return (
     <Container>
-      <h3>Select a payment method to make payment</h3>
-      <div>Total Price: ${totalPrice}</div>
+      <h4>Select a payment method to make payment</h4>
       <OptionsContainer>
         <Option
-          selected={selectedPaymentMethod === "directTransfer" && <Checkmark />}
+          selected={selectedPaymentMethod === "directTransfer"}
           onClick={() => handlePaymentMethodChange("directTransfer")}
         >
+          <img src={bank} alt="bank" />
           Direct Bank Transfer
+          {selectedPaymentMethod === "directTransfer" && <Checkmark />}
         </Option>
-        <Option
-          selected={selectedPaymentMethod === "paypal"}
-          onClick={() => handlePaymentMethodChange("paypal")}
-        >
-          <img src={paypal} alt="PayPal" />
-          Pay with Paypal
-          {selectedPaymentMethod === "paypal" && <Checkmark />}
-        </Option>
+
         <Option
           selected={selectedPaymentMethod === "stripe"}
           onClick={() => handlePaymentMethodChange("stripe")}
@@ -42,29 +41,13 @@ const PaymentMethod = ({ totalPrice }) => {
           Pay with Stripe
           {selectedPaymentMethod === "stripe" && <Checkmark />}
         </Option>
-        <Option
-          selected={selectedPaymentMethod === "paystack"}
-          onClick={() => handlePaymentMethodChange("paystack")}
-        >
-          <img src={paystack} alt="Paystack" />
-          Pay with Paystack
-          {selectedPaymentMethod === "paystack" && <Checkmark />}
-        </Option>
       </OptionsContainer>
-      {selectedPaymentMethod === "directTransfer" && (
-        <DirectTransfer>
-          <h3>Direct Transfer to Seller Account</h3>
-          <p>Account Number: 0095212279</p>
-          <p>Account Name: Falola Tosin Solomon</p>
-          <p>Bank: Access Bank</p>
-          <p style={{ color: "#4da3ff" }}>
-            Please put the description of payment in the transfer
-          </p>
-        </DirectTransfer>
+      {showDirectModal && selectedPaymentMethod === "directTransfer" && (
+        <DirectTransfer totalPrice={totalPrice} />
       )}
-      {selectedPaymentMethod === "paypal" && <PaypalPayment />}
-      {selectedPaymentMethod === "stripe" && <StripePayment />}
-      {selectedPaymentMethod === "paystack" && <PaystackPayment />}
+      {showStripeModal && selectedPaymentMethod === "stripe" && (
+        <StripePaymentModal totalPrice={totalPrice} />
+      )}
     </Container>
   );
 };
@@ -112,16 +95,6 @@ const Checkmark = styled(AiOutlineCheck)`
   top: 6px;
   right: 6px;
   color: #4da3ff;
-`;
-
-const DirectTransfer = styled.div`
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin-top: 20px;
-  min-height: 150px;
-  p {
-    margin: 0;
-  }
 `;
 
 export default PaymentMethod;
