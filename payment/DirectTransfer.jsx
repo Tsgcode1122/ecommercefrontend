@@ -83,18 +83,11 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 const CheckoutForm = ({ totalPrice, sendOrderDetailsToBackend, values }) => {
+  event.preventDefault();
   const navigate = useNavigate();
   const handleFormSubmit = async () => {
     try {
       await sendOrderDetailsToBackend(values);
-
-      localStorage.removeItem("cart");
-
-      handleCloseModal();
-
-      message.success("Order placed successfully!");
-      navigate("/");
-      window.location.reload();
     } catch (error) {
       console.error("Error placing order:", error);
     }

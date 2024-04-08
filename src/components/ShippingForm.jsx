@@ -7,11 +7,11 @@ const ShippingForm = ({
   onPaymentMethodChange,
   onPayOnDeliveryOptionChange,
 }) => {
-  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [shippingMethod, setShippingMethod] = useState(null);
   const [payOnDeliveryOption, setPayOnDeliveryOption] = useState(null);
 
   const handlePaymentMethodChange = (e) => {
-    setPaymentMethod(e.target.value);
+    setShippingMethod(e.target.value);
     onPaymentMethodChange(e.target.value);
   };
 
@@ -23,11 +23,11 @@ const ShippingForm = ({
   return (
     <div>
       <p>Shipping:</p>
-      <Radio.Group onChange={handlePaymentMethodChange} value={paymentMethod}>
+      <Radio.Group onChange={handlePaymentMethodChange} value={shippingMethod}>
         <Radio value="payOnDelivery">Pay on Delivery</Radio>
         <Radio value="payNow">Pay Now</Radio>
       </Radio.Group>
-      {paymentMethod === "payOnDelivery" && (
+      {shippingMethod === "payOnDelivery" && (
         <div style={{ marginTop: "10px" }}>
           <Select
             defaultValue="Select"
@@ -39,7 +39,7 @@ const ShippingForm = ({
           </Select>
         </div>
       )}
-      {paymentMethod === "payNow" && (
+      {shippingMethod === "payNow" && (
         <p>
           Kindly proceed to pay for your items. The shipping fee will be sent to
           your email. Thank you.

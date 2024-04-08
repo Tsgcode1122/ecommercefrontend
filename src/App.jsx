@@ -1,7 +1,14 @@
 // App.js
 
-import React from "react";
-import { BrowserRouter, Route, Link, Routes } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
 import HomePage from "./pages/HomePage";
 import ProductPage from "./pages/ProductPage";
 import SingleProductPage from "./pages/SingleProductPage";
@@ -17,8 +24,10 @@ import RegisterPage from "./pages/RegisterPage";
 import "./index.css";
 import Navbar from "./components/Navbar";
 import Checkout from "./components/CheckOut";
+import SuccessMessage from "../payment/SuccessMessage";
 
 const App = () => {
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
   return (
     <BrowserRouter>
       <Navbar />
@@ -34,7 +43,21 @@ const App = () => {
         <Route path="/login" exact Component={LoginPage} />
         <Route path="/reset-password" exact Component={ResetPasswordPage} />
         <Route path="/register" exact Component={RegisterPage} />
-        <Route path="/checkout" exact Component={Checkout} />
+        <Route
+          path="/checkout"
+          exact
+          element={
+            <Checkout
+              setOrderConfirmed={setOrderConfirmed}
+              orderConfirmed={orderConfirmed}
+            />
+          }
+        />
+        <Route
+          path="/success-message"
+          exact
+          Component={orderConfirmed ? SuccessMessage : HomePage}
+        ></Route>
       </Routes>
     </BrowserRouter>
   );

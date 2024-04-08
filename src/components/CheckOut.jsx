@@ -14,16 +14,16 @@ import PaymentMethod from "../../payment/PaymentMethod";
 import StripePaymentModal from "../../payment/StripePaymentModal";
 import { loadStripe } from "@stripe/stripe-js";
 import { useNavigate } from "react-router-dom";
-
-import { CardElement, useStripe, Elements } from "@stripe/react-stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import DirectTransfer from "../../payment/DirectTransfer";
 
 const stripePromise = loadStripe(
   "pk_test_51OuEOcP5VD7BOW3SqV5IuUrwEjGl5KoH8uzQrxHEbGjDqUk8Pf6CuKCR0W5gYIeZI392vqhQI6KTJflhl0rTcxPr00BWkzDpIb",
 );
 
-const Checkout = () => {
-  const { cart } = useCartContext();
+const Checkout = ({ setOrderConfirmed, orderConfirmed }) => {
+  // console.log(setOrderConfirmed);
+  const { cart, clearCart } = useCartContext();
   const { userData } = useUserData();
   const navigate = useNavigate();
   const { TextArea } = Input;
@@ -34,10 +34,12 @@ const Checkout = () => {
   const [loginDropdownVisible, setLoginDropdownVisible] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [shippingMethod, setShippingMethod] = useState(null);
   const [payOnDeliveryOption, setPayOnDeliveryOption] = useState(null);
   const [totalPrice, setTotalPrice] = useState();
   const [showStripeModal, setShowStripeModal] = useState(false);
   const [showDirectModal, setShowDirectModal] = useState(false);
+
   useEffect(() => {
     fetchCountries();
   }, []);
@@ -98,6 +100,10 @@ const Checkout = () => {
       // Check if payment method is selected
       if (!paymentMethod) {
         message.error("Please select a payment method");
+        return;
+      }
+      if (!ShippingForm) {
+        message.error("Please select a shipping fee option");
         return;
       }
 
@@ -172,6 +178,7 @@ const Checkout = () => {
   };
 
   const sendOrderDetailsToBackend = async (values) => {
+    event.preventDefault();
     try {
       // Fetch user data from local storage
       const userData = localStorage.getItem("user");
@@ -190,6 +197,7 @@ const Checkout = () => {
       const orderData = {
         userId: userId,
         paymentMethod: paymentMethod,
+        shippingMethod: shippingMethod,
         payOnDeliveryOption: payOnDeliveryOption,
         totalPrice: totalPrice,
         cartItems: cart.map((item, index) => ({
@@ -214,11 +222,14 @@ const Checkout = () => {
       if (response.status === 201) {
         // Clear cart data from local storage
         localStorage.removeItem("cart");
-        // Close the modal
-        handleCloseModal();
-
-        message.success("Order placed successfully!");
-        navigate("/");
+        clearCart();
+        if (paymentMethod === "stripe") {
+          handleCloseModal();
+        } else if (paymentMethod === "directTransfer") {
+          handleDirectModal();
+        }
+        setOrderConfirmed(true);
+        navigate("/success-message");
       } else {
         message.error("Failed to create order. Please try again.");
       }
@@ -376,7 +387,7 @@ const Checkout = () => {
             />
 
             <ShippingForm
-              onPaymentMethodChange={setPaymentMethod}
+              onPaymentMethodChange={setShippingMethod}
               onPayOnDeliveryOptionChange={setPayOnDeliveryOption}
             />
             <hr />
@@ -386,7 +397,12 @@ const Checkout = () => {
               onPaymentMethodChange={setPaymentMethod}
             />
             <Form.Item>
-              <Button type="primary" htmlType="submit" onClick={handleModal}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={handleModal}
+                disabled={cart.length === 0}
+              >
                 Proceed to payment ${totalPrice}
               </Button>
             </Form.Item>

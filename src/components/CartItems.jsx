@@ -90,13 +90,13 @@ const CartItems = ({ closeSidebar }) => {
             <TotalPrice>Sub total Price: ${calculateTotalPrice()}</TotalPrice>
             {/* clear all cart */}
             <button onClick={clearCart}>Clear all cart</button>
+            <Link to="/checkout" onClick={closeSidebar}>
+              {" "}
+              Proceed to Checkout
+            </Link>
           </>
         )}
       </ItemList>
-      <Link to="/checkout" onClick={closeSidebar}>
-        {" "}
-        Proceed to Checkout
-      </Link>
     </Container>
   );
 };
