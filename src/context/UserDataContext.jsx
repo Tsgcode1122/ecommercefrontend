@@ -23,14 +23,6 @@ export const UserDataProvider = ({ children }) => {
     }
   }, []);
 
-  // Function to handle logout
-  // const logoutUser = () => {
-  //   // Clear user data from local storage
-  //   localStorage.removeItem("user");
-  //   // Set user data to null
-  //   setUserData(null);
-  // };
-
   return (
     <UserDataContext.Provider value={{ userData }}>
       {children}

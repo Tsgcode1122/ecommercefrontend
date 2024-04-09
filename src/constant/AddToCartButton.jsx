@@ -93,7 +93,6 @@ const AddToCartButton = ({
         totalQuantityInCart,
       );
 
-      // Add to cart logic here
       // alert(`Added ${quantity} ${singleProduct.name} to cart.`);
     } else {
       alert(

@@ -25,6 +25,7 @@ import "./index.css";
 import Navbar from "./components/Navbar";
 import Checkout from "./components/CheckOut";
 import SuccessMessage from "../payment/SuccessMessage";
+import Footer from "../Footer/Footer";
 
 const App = () => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -59,6 +60,7 @@ const App = () => {
           Component={orderConfirmed ? SuccessMessage : HomePage}
         ></Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 };
