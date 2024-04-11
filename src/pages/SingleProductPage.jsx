@@ -9,7 +9,7 @@ import ShareProduct from "../components/ShareProduct";
 import RelatedProducts from "../components/RelatedProducts";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import AddToCartButton from "../constant/AddToCartButton";
-
+import AddToWishlist from "../components/AddToWishlist";
 const SingleProductPage = () => {
   const { id } = useParams();
   const { loading, products } = useProductContext();
@@ -83,7 +83,7 @@ const SingleProductPage = () => {
           <div className="namewishlist">
             <h2>{singleProduct.name}</h2>
             <div className="wishlist-icon">
-              <CiHeart />
+              <AddToWishlist productId={singleProduct._id} />
             </div>
           </div>
           <ProductImages>

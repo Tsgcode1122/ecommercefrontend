@@ -1,47 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { useUserContext } from "../context/UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import CryptoJS from "crypto-js";
 import styled from "styled-components";
-
-const LoginPageContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const LoginForm = styled(Form)`
-  width: 400px;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-`;
-
-const LoginFormTitle = styled.h2`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-const ForgotPasswordLink = styled(Link)`
-  display: block;
-  text-align: right;
-  margin-bottom: 10px;
-  color: #1890ff;
-`;
-
-const RegisterNowText = styled.span`
-  display: block;
-  text-align: center;
-  margin-top: 10px;
-`;
 
 const LoginPage = () => {
   const { loginUser } = useUserContext();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(false);
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -58,8 +27,9 @@ const LoginPage = () => {
       // Store token and encrypted user data in local storage
       localStorage.setItem("token", token);
       localStorage.setItem("user", encryptedUserData);
-      navigate("/");
-      window.location.reload();
+
+      navigate(-1);
+      // window.location.reload();
     } catch (error) {
       console.error("Error logging in:", error.message);
       message.error(error.message);
@@ -115,5 +85,36 @@ const LoginPage = () => {
     </LoginPageContainer>
   );
 };
+const LoginPageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const LoginForm = styled(Form)`
+  width: 400px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+`;
+
+const LoginFormTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+const ForgotPasswordLink = styled(Link)`
+  display: block;
+  text-align: right;
+  margin-bottom: 10px;
+  color: #1890ff;
+`;
+
+const RegisterNowText = styled.span`
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+`;
 
 export default LoginPage;

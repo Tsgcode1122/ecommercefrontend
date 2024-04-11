@@ -26,6 +26,7 @@ import Navbar from "./components/Navbar";
 import Checkout from "./components/CheckOut";
 import SuccessMessage from "../payment/SuccessMessage";
 import Footer from "../Footer/Footer";
+import WishList from "./pages/WishList";
 
 const App = () => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/cart" exact Component={CartPage} />
         <Route path="/about" exact Component={AboutPage} />
         <Route path="/payment" exact Component={PaymentPage} />
+        <Route path="/wishlist" exact Component={WishList} />
         <Route path="/admin" exact Component={AdminDashboardPage} />
         <Route path="/profile" exact Component={CustomerProfilePage} />
         <Route path="/login" exact Component={LoginPage} />

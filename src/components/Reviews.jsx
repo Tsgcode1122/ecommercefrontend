@@ -11,6 +11,7 @@ const Reviews = () => {
   const { id } = useParams();
   const { reviews, loading, getReviewsByProductId } = useReviewContext();
   const productReviews = getReviewsByProductId(id);
+  console.log(productReviews);
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { month: "short", day: "numeric", year: "numeric" };
@@ -31,6 +32,10 @@ const Reviews = () => {
                     <Rate disabled defaultValue={review.rating} />
                     <p>{review.comment}</p>
                     <p>posted : {formatDate(review.createdAt)}</p>
+                    <p>
+                      Posted by:{" "}
+                      {review.fullName && review.fullName.split(" ")[0]}
+                    </p>
                   </ReviewContent>
                 </ReviewItem>
               ))}

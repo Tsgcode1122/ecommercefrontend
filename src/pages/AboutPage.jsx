@@ -1,10 +1,12 @@
 import React from "react";
-import WishlistItem from "../components/WishlistItem";
 
 const AboutPage = () => {
   return (
     <div>
-      <WishlistItem />
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+      eaque officia cupiditate consequatur distinctio facilis a dolor
+      perferendis vitae inventore unde ullam quas aspernatur expedita dolores
+      libero corporis, optio iste?
     </div>
   );
 };

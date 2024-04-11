@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useProductContext } from "../context/ProductContext";
 import styled from "styled-components";
+import { Spin } from "antd";
 import { BsCartPlus } from "react-icons/bs";
 import { IoEyeOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
@@ -10,56 +11,60 @@ import AddToWishlist from "../components/AddToWishlist";
 
 const ProductPage = () => {
   const { products } = useProductContext();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      setLoading(false);
+    }
+  }, [products]);
 
   return (
     <Wrapper>
       <h2>All Products</h2>
-
-      <ProductContainer>
-        {products.map((product) => (
-          <ProductCard>
-            {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
-            <img src={product.images[0]} alt={product.name} />
-            <div className="icon-container">
+      <Spin spinning={loading} size="large">
+        <ProductContainer>
+          {products.map((product) => (
+            <ProductCard key={product._id}>
+              {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
+              <img src={product.images[0]} alt={product.name} />
               <div className="icon-container">
                 <AddToWishlist productId={product._id} />
               </div>
-            </div>
-            <Link
-              to={`/products/${product._id}`}
-              className="link"
-              key={product._id}
-            >
-              <div className="order">
-                <p>Select Options</p>
-                <div className="eye-icon">
-                  <IoEyeOutline />
+              <Link to={`/products/${product._id}`} className="link">
+                <div className="order">
+                  <p>Select Options</p>
+                  <div className="eye-icon">
+                    <IoEyeOutline />
+                  </div>
                 </div>
-              </div>
 
-              <div className="cart-name">
-                <h5>{product.name}</h5>{" "}
-                {product.onSale ? (
-                  <SalePrice>
-                    <span className="new-price">
-                      ${calculateSalePrice(product.price)}
-                    </span>
-                    <span className="old-price">${product.price}</span>
-                  </SalePrice>
-                ) : (
-                  <p>${product.price}</p>
-                )}
-              </div>
+                <div className="cart-name">
+                  <h5>{product.name}</h5>{" "}
+                  {product.onSale ? (
+                    <SalePrice>
+                      <span className="new-price">
+                        ${calculateSalePrice(product.price)}
+                      </span>
+                      <span className="old-price">${product.price}</span>
+                    </SalePrice>
+                  ) : (
+                    <p>${product.price}</p>
+                  )}
+                </div>
 
-              {product.variants.length > 0 &&
-                product.variants[0].sizes.length > 0 &&
-                product.variants[0].sizes[0].stock === 0 && (
-                  <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
-                )}
-            </Link>
-          </ProductCard>
-        ))}
-      </ProductContainer>
+                {product.variants.length > 0 &&
+                  product.variants[0].sizes.length > 0 &&
+                  product.variants[0].sizes[0].stock === 0 && (
+                    <OutOfStock className="out-of-stock">
+                      Out of stock
+                    </OutOfStock>
+                  )}
+              </Link>
+            </ProductCard>
+          ))}
+        </ProductContainer>
+      </Spin>
     </Wrapper>
   );
 };

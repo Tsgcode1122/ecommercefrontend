@@ -50,7 +50,7 @@ export const WishlistProvider = ({ children }) => {
   const getWishlist = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5005/api/wishlist/getAllWishlist?userId=660bb65b9ea709bd9cb974f2`,
+        `http://localhost:5005/api/wishlist/getAllWishlist?userId=${userId}`,
       );
 
       return response.data;

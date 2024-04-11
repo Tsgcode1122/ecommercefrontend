@@ -58,11 +58,14 @@ const Navbar = () => {
           </CartIconInner>
         </CartIcon>
       </StyledNavbar>
+      <div style={{ height: "5rem" }}></div>
+
       <Sidebar isOpen={isSidebarOpen} ref={sidebarRef}>
         <CloseButton onClick={closeSidebar}>Close</CloseButton>
         {/* i sent the closesidebar to the cartitems also */}
         <CartItems closeSidebar={closeSidebar} />
       </Sidebar>
+
       {isSidebarOpen && <Overlay onClick={closeSidebar} />}
     </>
   );
@@ -74,23 +77,30 @@ const StyledNavbar = styled.nav`
   width: 100%;
   top: 0;
   z-index: 999;
+
   right: 0;
+  margin: 0;
+
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 1px 20px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
-
+const navHeight = styled.div`
+  height: 500rem;
+`;
 const MenuToggle = styled.div`
-  /* Style for menu toggle */
+  margin: 0;
 `;
 
 const Logo = styled.div`
-  /* Style for logo */
+  margin: 0;
+  padding: 0;
 `;
 
 const CartIcon = styled.div`
+  margin: 0;
   cursor: pointer;
 `;
 

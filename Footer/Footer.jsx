@@ -10,76 +10,90 @@ import {
   LoginOutlined,
 } from "@ant-design/icons";
 import { useUserData } from "../src/context/UserDataContext";
+import ProfileModal from "./ProfileModal";
 
 const Footer = () => {
   const [activeLink, setActiveLink] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
   const { userData } = useUserData();
+
   const handleLinkClick = (link) => {
     setActiveLink(link);
   };
 
+  const handleProfileClick = () => {
+    setActiveLink("profile");
+    setModalVisible(true);
+  };
+
   return (
-    <StyledFooter>
-      <StyledLink
-        to="/"
-        active={activeLink === "home"}
-        onClick={() => handleLinkClick("home")}
-      >
-        <IconWrapper>
-          <HomeOutlined />
-          <IconName>Home</IconName>
-        </IconWrapper>
-      </StyledLink>
-      <StyledLink
-        to="/wishlist"
-        active={activeLink === "wishlist"}
-        onClick={() => handleLinkClick("wishlist")}
-      >
-        <IconWrapper>
-          <HeartOutlined />
-          <IconName>Wishlist</IconName>
-        </IconWrapper>
-      </StyledLink>
-      <StyledLink
-        to="/products"
-        active={activeLink === "products"}
-        onClick={() => handleLinkClick("products")}
-      >
-        <ProductIconWrapper>
-          <ShoppingOutlined />
-          <IconName>Products</IconName>
-        </ProductIconWrapper>
-      </StyledLink>
-      <StyledLink
-        to="/about"
-        active={activeLink === "about"}
-        onClick={() => handleLinkClick("about")}
-      >
-        <IconWrapper>
-          <InfoCircleOutlined />
-          <IconName>About</IconName>
-        </IconWrapper>
-      </StyledLink>
-      {userData ? (
+    <>
+      <StyledFooter>
         <StyledLink
-          to="/profile"
-          active={activeLink === "profile"}
-          onClick={() => handleLinkClick("profile")}
+          to="/"
+          active={activeLink === "home"}
+          onClick={() => handleLinkClick("home")}
         >
-          <IconWrapper className="profile-style">
-            <UserOutlined />
-            <IconName>Profile</IconName>
-          </IconWrapper>
-        </StyledLink>
-      ) : (
-        <StyledLink to="/login">
           <IconWrapper>
-            <LoginOutlined />
-            <IconName>Login</IconName>
+            <HomeOutlined />
+            <IconName>Home</IconName>
           </IconWrapper>
         </StyledLink>
-      )}
-    </StyledFooter>
+        <StyledLink
+          to="/wishlist"
+          active={activeLink === "wishlist"}
+          onClick={() => handleLinkClick("wishlist")}
+        >
+          <IconWrapper>
+            <HeartOutlined />
+            <IconName>Wishlist</IconName>
+          </IconWrapper>
+        </StyledLink>
+        <StyledLink
+          to="/products"
+          active={activeLink === "products"}
+          onClick={() => handleLinkClick("products")}
+        >
+          <ProductIconWrapper>
+            <ShoppingOutlined />
+            <IconName>Products</IconName>
+          </ProductIconWrapper>
+        </StyledLink>
+        <StyledLink
+          to="/about"
+          active={activeLink === "about"}
+          onClick={() => handleLinkClick("about")}
+        >
+          <IconWrapper>
+            <InfoCircleOutlined />
+            <IconName>About</IconName>
+          </IconWrapper>
+        </StyledLink>
+        {userData ? (
+          <StyledLink
+            to="/profile"
+            active={activeLink === "profile"}
+            onClick={handleProfileClick}
+          >
+            <IconWrapper className="profile-style">
+              <UserOutlined />
+              <IconName>Profile</IconName>
+            </IconWrapper>
+          </StyledLink>
+        ) : (
+          <StyledLink to="/login">
+            <IconWrapper>
+              <LoginOutlined />
+              <IconName>Login</IconName>
+            </IconWrapper>
+          </StyledLink>
+        )}
+      </StyledFooter>
+      <ProfileModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
+    </>
   );
 };
 

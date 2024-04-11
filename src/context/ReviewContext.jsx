@@ -2,13 +2,14 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
+import { useUserData } from "./UserDataContext";
 const ReviewContext = createContext();
 
 export const ReviewProvider = ({ children }) => {
   const [reviews, setReviews] = useState([]);
   const [error, setError] = useState(null);
-
+  const { userData } = useUserData();
+  const userId = userData ? userData._id : null;
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -29,10 +30,10 @@ export const ReviewProvider = ({ children }) => {
 
   const createReview = async (newReviewData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:5005/api/reviews",
+      const response = await axios.post("http://localhost:5005/api/reviews", {
         newReviewData,
-      );
+        userId,
+      });
       const newReview = response.data;
       setReviews([...reviews, newReview]);
     } catch (error) {
