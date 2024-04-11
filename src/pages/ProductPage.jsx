@@ -6,6 +6,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { calculateSalePrice } from "../constant/Saleprice";
+import AddToWishlist from "../components/AddToWishlist";
 
 const ProductPage = () => {
   const { products } = useProductContext();
@@ -16,19 +17,19 @@ const ProductPage = () => {
 
       <ProductContainer>
         {products.map((product) => (
-          <Link
-            to={`/products/${product._id}`}
-            className="link"
-            key={product._id}
-          >
-            <ProductCard>
-              {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
-              <img src={product.images[0]} alt={product.name} />
+          <ProductCard>
+            {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
+            <img src={product.images[0]} alt={product.name} />
+            <div className="icon-container">
               <div className="icon-container">
-                <div className="wishlist-icon">
-                  <CiHeart />
-                </div>
+                <AddToWishlist productId={product._id} />
               </div>
+            </div>
+            <Link
+              to={`/products/${product._id}`}
+              className="link"
+              key={product._id}
+            >
               <div className="order">
                 <p>Select Options</p>
                 <div className="eye-icon">
@@ -55,8 +56,8 @@ const ProductPage = () => {
                 product.variants[0].sizes[0].stock === 0 && (
                   <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
                 )}
-            </ProductCard>
-          </Link>
+            </Link>
+          </ProductCard>
         ))}
       </ProductContainer>
     </Wrapper>

@@ -10,6 +10,7 @@ import { UserDataProvider } from "./context/UserDataContext.jsx";
 import { SendEmailProvider } from "./context/SendEmailContext.jsx";
 import { ForgetPasswordProvider } from "./context/forgetPasswordContext.jsx";
 import { ResetPasswordProvider } from "./context/ResetPasswordContext.jsx";
+import { WishlistProvider } from "./context/WishlistContext.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
@@ -21,7 +22,9 @@ root.render(
             <ProductProvider>
               <ReviewProvider>
                 <CartProvider>
-                  <App />
+                  <WishlistProvider>
+                    <App />
+                  </WishlistProvider>
                 </CartProvider>
               </ReviewProvider>
             </ProductProvider>
