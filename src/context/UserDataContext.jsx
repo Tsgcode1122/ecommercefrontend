@@ -7,10 +7,11 @@ export const useUserData = () => useContext(UserDataContext);
 
 export const UserDataProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
+  // const [userData, setUserData] = useState(storedEncryptedUserData);
 
+  const storedEncryptedUserData = localStorage.getItem("user");
   useEffect(() => {
     // Retrieve encrypted user data from local storage
-    const storedEncryptedUserData = localStorage.getItem("user");
 
     // Decrypt and set user data
     if (storedEncryptedUserData) {
@@ -21,7 +22,7 @@ export const UserDataProvider = ({ children }) => {
       const decryptedUserData = bytes.toString(CryptoJS.enc.Utf8);
       setUserData(JSON.parse(decryptedUserData));
     }
-  }, []);
+  }, [storedEncryptedUserData]);
 
   return (
     <UserDataContext.Provider value={{ userData }}>

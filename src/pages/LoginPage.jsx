@@ -29,7 +29,6 @@ const LoginPage = () => {
       localStorage.setItem("user", encryptedUserData);
 
       navigate(-1);
-      // window.location.reload();
     } catch (error) {
       console.error("Error logging in:", error.message);
       message.error(error.message);

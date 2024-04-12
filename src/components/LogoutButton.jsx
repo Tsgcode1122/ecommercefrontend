@@ -9,7 +9,6 @@ const LogoutButton = ({ onClick }) => {
     // Call the logoutUser function to handle logout
     localStorage.removeItem("user");
 
-    // Reload the page without showing a blank screen
     window.location.reload();
 
     // If onClick prop is provided, call it

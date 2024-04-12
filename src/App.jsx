@@ -27,6 +27,7 @@ import Checkout from "./components/CheckOut";
 import SuccessMessage from "../payment/SuccessMessage";
 import Footer from "../Footer/Footer";
 import WishList from "./pages/WishList";
+import MyOders from "./pages/MyOders";
 
 const App = () => {
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/products" exact Component={ProductPage} />
         <Route path="/products/:id" exact Component={SingleProductPage} />
         <Route path="/cart" exact Component={CartPage} />
+        <Route path="/my-orders" exact Component={MyOders} />
         <Route path="/about" exact Component={AboutPage} />
         <Route path="/payment" exact Component={PaymentPage} />
         <Route path="/wishlist" exact Component={WishList} />

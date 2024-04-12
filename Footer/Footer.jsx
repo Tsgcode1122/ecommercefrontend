@@ -71,7 +71,6 @@ const Footer = () => {
         </StyledLink>
         {userData ? (
           <StyledLink
-            to="/profile"
             active={activeLink === "profile"}
             onClick={handleProfileClick}
           >
