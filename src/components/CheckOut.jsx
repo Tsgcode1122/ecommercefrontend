@@ -58,9 +58,12 @@ const Checkout = ({ setOrderConfirmed, orderConfirmed }) => {
       // Set form values from user data
       form.setFieldsValue({
         fullName: decryptedUserData.fullName,
+        country: decryptedUserData.country,
         email: decryptedUserData.email,
-        phone: decryptedUserData.phone,
-        // Add other fields here
+        state: decryptedUserData.state,
+        phone: decryptedUserData.phoneNumber,
+        streetAddress: decryptedUserData.streetAddress,
+        townCity: decryptedUserData.city,
       });
     }
   }, [userData]);

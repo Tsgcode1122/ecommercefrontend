@@ -27,7 +27,7 @@ const LoginPage = () => {
       // Store token and encrypted user data in local storage
       localStorage.setItem("token", token);
       localStorage.setItem("user", encryptedUserData);
-
+      console.log(encryptedUserData);
       navigate(-1);
     } catch (error) {
       console.error("Error logging in:", error.message);

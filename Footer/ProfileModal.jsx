@@ -78,7 +78,7 @@ const ModalContent = styled.div`
   background-color: #ffff;
   width: 100%;
   padding: 20px;
-  margin-bottom: 60px;
+  margin-bottom: 55px;
   border-radius: 35px 35px 0 0;
   box-shadow: 0px -10px 10px -10px rgba(0, 0, 0, 0.5);
 `;
