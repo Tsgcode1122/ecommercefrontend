@@ -12,7 +12,7 @@ import LogoutButton from "../src/components/LogoutButton";
 
 const ProfileModal = ({ visible, onClose }) => {
   const { userData } = useUserData();
-
+  console.log(userData);
   const handleItemClick = () => {
     onClose(); // Close the modal when any item is clicked
   };

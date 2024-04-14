@@ -207,7 +207,9 @@ const SingleProductPage = () => {
   );
 };
 
-const Container = styled.div``;
+const Container = styled.div`
+  margin-bottom: 7rem;
+`;
 const QuantityControl = styled.div`
   display: flex;
   align-items: center;

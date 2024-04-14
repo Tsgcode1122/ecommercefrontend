@@ -72,6 +72,7 @@ const ProductPage = () => {
 const Wrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
+  margin-bottom: 7rem;
   padding: 20px;
 
   h2 {

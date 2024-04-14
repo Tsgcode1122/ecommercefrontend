@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { BsCartPlus } from "react-icons/bs";
 import { IoEyeOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
-
+import AddToWishlist from "../components/AddToWishlist";
 import { calculateSalePrice } from "../constant/Saleprice";
 const RelatedProducts = () => {
   const { id } = useParams();
@@ -39,11 +39,11 @@ const RelatedProducts = () => {
                 <ProductCard>
                   {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
                   <img src={product.images[0]} alt={product.name} />
-                  <div className="icon-container">
-                    <div className="wishlist-icon">
-                      <CiHeart />
-                    </div>
-                  </div>
+
+                  {/* <div className="icon-container">
+                    <AddToWishlist productId={product._id} />
+                  </div> */}
+
                   <div className="order">
                     <p>Select Options</p>
                     <div className="eye-icon">
@@ -92,7 +92,7 @@ const Wrapper = styled.div`
 
 const ProductContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   position: relative;
   @media screen and (max-width: 499px) {

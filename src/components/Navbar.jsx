@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const { userData } = useUserData(); // Retrieve userData from UserData
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [prevScrollPos, setPrevScrollPos] = useState(window.scrollY);
+  const [visible, setVisible] = useState(true);
   const sidebarRef = useRef(null);
 
   const toggleSidebar = () => {
@@ -20,27 +22,20 @@ const Navbar = () => {
     setIsSidebarOpen(false);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        closeSidebar();
-      }
-    };
-    // to click on the outsidebody and close the sidebar
-    if (isSidebarOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+  const handleScroll = () => {
+    const currentScrollPos = window.scrollY;
+    setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
+    setPrevScrollPos(currentScrollPos);
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isSidebarOpen]);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos, visible]);
 
   return (
     <>
-      <StyledNavbar>
+      <StyledNavbar style={{ top: visible ? 0 : "-5rem" }}>
         <MenuToggle onClick={toggleSidebar} />
 
         {/* Conditionally render login/logout link */}
@@ -86,6 +81,7 @@ const StyledNavbar = styled.nav`
   padding: 1px 20px;
   background-color: #ffffff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: top 0.3s;
 `;
 const navHeight = styled.div`
   height: 500rem;
