@@ -57,11 +57,14 @@ const Navbar = () => {
           <MenuOutlined />
         </MenuToggle>
       </StyledNavbar>
+      <NavHeight></NavHeight>
       <Sidebar isOpen={isSidebarOpen} ref={sidebarRef}>
         <SidebarContent>
           <Menu mode="inline" defaultSelectedKeys={["0"]} theme="light">
             <Menu.Item key="0" icon={<FormOutlined />}>
-              <Link to="/">Overview</Link>
+              <Link to="/admin" onClick={closeSidebar}>
+                Overview
+              </Link>
             </Menu.Item>
             <SubMenu
               key="sub1"
@@ -69,63 +72,109 @@ const Navbar = () => {
               title="Products"
             >
               <Menu.Item key="1">
-                <Link to="/manage-products">Manage Products</Link>
+                <Link to="/admin/manage-products" onClick={closeSidebar}>
+                  Manage Products
+                </Link>
               </Menu.Item>
               <Menu.Item key="2">
-                <Link to="/create-products">Create Products</Link>
+                <Link to="/admin/create-products" onClick={closeSidebar}>
+                  Create Products
+                </Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu key="sub2" icon={<OrderedListOutlined />} title="Orders">
               <Menu.Item key="3">
-                <Link to="/manage-orders">Manage Orders</Link>
+                <Link to="/admin/manage-orders" onClick={closeSidebar}>
+                  Manage Orders
+                </Link>
               </Menu.Item>
               <Menu.Item key="4">
-                <Link to="/create-Orders">Create Orders</Link>
+                <Link to="/admin/create-orders" onClick={closeSidebar}>
+                  Create Orders
+                </Link>
               </Menu.Item>
               <Menu.Item key="5">
-                <Link to="/new-Orders">New Orders</Link>
+                <Link to="/admin/new-orders" onClick={closeSidebar}>
+                  New Orders
+                </Link>
               </Menu.Item>
             </SubMenu>
 
             <Menu.Item key="6" icon={<LineChartOutlined />}>
-              <Link to="/sales">Sales Report</Link>
+              <Link to="/admin/salesReport" onClick={closeSidebar}>
+                Sales Report
+              </Link>
             </Menu.Item>
 
             <SubMenu key="sub4" icon={<TagOutlined />} title="Discount">
               <Menu.Item key="7">
-                <Link to="/create-discount">Create discount</Link>
+                <Link to="/admin/create-discount" onClick={closeSidebar}>
+                  Create discount
+                </Link>
               </Menu.Item>
               <Menu.Item key="8">
-                <Link to="/create-coupon">Create Coupon</Link>
+                <Link to="/admin/create-coupon" onClick={closeSidebar}>
+                  Create Coupon
+                </Link>
               </Menu.Item>
               <Menu.Item key="9">
-                <Link to="/on-sales">Create sales Percentage</Link>
+                <Link
+                  to="/admin/create-sales-percentage"
+                  onClick={closeSidebar}
+                >
+                  Create sales Percentage
+                </Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu key="sub5" icon={<FileOutlined />} title="Reports">
               <Menu.Item key="10">
-                <Link to="/transaction">Transactions</Link>
+                <Link to="/admin/transactions" onClick={closeSidebar}>
+                  Transactions
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="11">
+                <Link to="/admin/total-orders" onClick={closeSidebar}>
+                  Total Orders
+                </Link>
               </Menu.Item>
 
               <Menu.Item key="12">
-                <Link to="/page-view">Page visitors</Link>
+                <Link to="/admin/page-visits" onClick={closeSidebar}>
+                  Page visitors
+                </Link>
+              </Menu.Item>
+              <Menu.Item key="13">
+                <Link to="/admin/cancel-orders" onClick={closeSidebar}>
+                  Cancelled Orders
+                </Link>
               </Menu.Item>
             </SubMenu>
 
             <Menu.Item key="13" icon={<UserOutlined />}>
-              <Link to="/customers">Customers</Link>
+              <Link to="/admin/customers" onClick={closeSidebar}>
+                Customers
+              </Link>
             </Menu.Item>
             <Menu.Item key="14" icon={<TagsOutlined />}>
-              <Link to="/request-notification">Customers Requests</Link>
+              <Link to="/admin/customers-Requests" onClick={closeSidebar}>
+                Customers Requests
+              </Link>
             </Menu.Item>
             <Menu.Item key="15" icon={<UsergroupAddOutlined />}>
-              <Link to="/registered-Users">Registered Users</Link>
+              <Link to="/admin/registered-users" onClick={closeSidebar}>
+                Registered Users
+              </Link>
             </Menu.Item>
             <Menu.Item key="16" icon={<SolutionOutlined />}>
-              <Link to="/Sale-popup">Create Sales PopUp</Link>
+              <Link to="/admin/create-sales-pop" onClick={closeSidebar}>
+                Create Sales PopUp
+              </Link>
             </Menu.Item>
             <Menu.Item key="17" icon={<StarOutlined />}>
-              <Link to="/Reviews">Reviews</Link>
+              <Link to="/admin/reviews" onClick={closeSidebar}>
+                Reviews
+              </Link>
             </Menu.Item>
           </Menu>
         </SidebarContent>
@@ -134,7 +183,9 @@ const Navbar = () => {
     </>
   );
 };
-
+const NavHeight = styled.div`
+  height: 3rem;
+`;
 // Styled components
 const Inner = styled.div`
   position: relative;
@@ -157,7 +208,7 @@ const StyledNavbar = styled.nav`
   top: 0;
   z-index: 999;
   right: 0;
-  height: 2rem;
+  height: 3rem;
   gap: 20px;
   margin: 0;
   align-items: center;
@@ -179,14 +230,17 @@ const Sidebar = styled.div`
   left: ${({ isOpen }) => (isOpen ? "0" : "-300px")};
   width: 300px;
   height: 100vh;
-  background-color: #ffffff; /* Set sidebar background color */
+  background-color: #ffffff;
+  border-radius: 0 20px 20px 0;
+  border-right: 0.5px solid #313538;
   transition: left 0.5s ease-in-out;
   z-index: 1000; /* Ensure Sidebar is on top */
   overflow-x: hidden;
 `;
 
 const SidebarContent = styled.div`
-  padding: 20px;
+  padding: 10px;
+  padding-top: 3rem;
 `;
 
 const Overlay = styled.div`
