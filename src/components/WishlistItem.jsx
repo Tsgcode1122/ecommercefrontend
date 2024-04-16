@@ -86,15 +86,19 @@ const WishlistItem = () => {
               <>
                 {wishlistProducts.map((wishlistItem) => (
                   <ProductCard key={wishlistItem.productId}>
-                    {wishlistItem.product.onSale && (
+                    {wishlistItem.product && wishlistItem.product.onSale && (
                       <OnSaleLabel>On Sale</OnSaleLabel>
                     )}
                     <img
-                      src={wishlistItem.product.images[0]}
-                      alt={wishlistItem.product.name}
+                      src={
+                        wishlistItem.product && wishlistItem.product.images[0]
+                      }
+                      alt={wishlistItem.product && wishlistItem.product.name}
                     />
                     <Link
-                      to={`/products/${wishlistItem.product._id}`}
+                      to={`/products/${
+                        wishlistItem.product && wishlistItem.product._id
+                      }`}
                       className="link"
                     >
                       <div className="order">
@@ -105,22 +109,36 @@ const WishlistItem = () => {
                       </div>
 
                       <div className="cart-name">
-                        <h5>{wishlistItem.product.name}</h5>{" "}
-                        {wishlistItem.product.onSale ? (
+                        <h5>
+                          {wishlistItem.product && wishlistItem.product.name}
+                        </h5>{" "}
+                        {wishlistItem.product && wishlistItem.product.onSale ? (
                           <SalePrice>
                             <span className="new-price">
-                              ${calculateSalePrice(wishlistItem.product.price)}
+                              $
+                              {calculateSalePrice(
+                                wishlistItem.product &&
+                                  wishlistItem.product.price,
+                              )}
                             </span>
                             <span className="old-price">
-                              ${wishlistItem.product.price}
+                              $
+                              {wishlistItem.product &&
+                                wishlistItem.product.price}
                             </span>
                           </SalePrice>
                         ) : (
-                          <p>${wishlistItem.product.price}</p>
+                          <p>
+                            $
+                            {wishlistItem.product && wishlistItem.product.price}
+                          </p>
                         )}
                       </div>
-                      {wishlistItem.product.variants.length > 0 &&
+                      {wishlistItem.product &&
+                        wishlistItem.product.variants.length > 0 &&
+                        wishlistItem.product &&
                         wishlistItem.product.variants[0].sizes.length > 0 &&
+                        wishlistItem.product &&
                         wishlistItem.product.variants[0].sizes[0].stock ===
                           0 && (
                           <OutOfStock className="out-of-stock">

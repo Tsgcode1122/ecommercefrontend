@@ -100,6 +100,7 @@ const GlobalStyle = createGlobalStyle`
 const IrregularCircle = styled.div`
   width: 100%;
   height: 450px;
+  z-index: -1;
   position: absolute;
   clip-path: ellipse(100% 60% at 70% 0%);
   background: rgb(37, 71, 106);

@@ -18,7 +18,7 @@ const Container = styled.div`
   margin-bottom: 24px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 1rem;
+  padding: 0 1rem 0.5rem 1rem;
   gap: 10px;
 `;
 

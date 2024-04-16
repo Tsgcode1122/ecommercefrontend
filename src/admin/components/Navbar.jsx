@@ -151,27 +151,27 @@ const Navbar = () => {
               </Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="13" icon={<UserOutlined />}>
+            <Menu.Item key="14" icon={<UserOutlined />}>
               <Link to="/admin/customers" onClick={closeSidebar}>
                 Customers
               </Link>
             </Menu.Item>
-            <Menu.Item key="14" icon={<TagsOutlined />}>
+            <Menu.Item key="15" icon={<TagsOutlined />}>
               <Link to="/admin/customers-Requests" onClick={closeSidebar}>
                 Customers Requests
               </Link>
             </Menu.Item>
-            <Menu.Item key="15" icon={<UsergroupAddOutlined />}>
+            <Menu.Item key="16" icon={<UsergroupAddOutlined />}>
               <Link to="/admin/registered-users" onClick={closeSidebar}>
                 Registered Users
               </Link>
             </Menu.Item>
-            <Menu.Item key="16" icon={<SolutionOutlined />}>
+            <Menu.Item key="17" icon={<SolutionOutlined />}>
               <Link to="/admin/create-sales-pop" onClick={closeSidebar}>
                 Create Sales PopUp
               </Link>
             </Menu.Item>
-            <Menu.Item key="17" icon={<StarOutlined />}>
+            <Menu.Item key="18" icon={<StarOutlined />}>
               <Link to="/admin/reviews" onClick={closeSidebar}>
                 Reviews
               </Link>

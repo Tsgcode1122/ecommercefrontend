@@ -25,9 +25,27 @@ const SingleProductPage = () => {
       setSelectedSize(singleProduct.variants[0].sizes[0].size);
     }
   }, [singleProduct]);
-
   const handleColorSelection = (color) => {
     setSelectedColor(color);
+
+    // Check if the previously selected size is available for the newly selected color
+    const variant = singleProduct.variants.find(
+      (variant) => variant.color === color,
+    );
+    if (variant) {
+      const prevSize = selectedSize;
+      const newSize = variant.sizes.find((size) => size.size === prevSize);
+      if (newSize) {
+        setSelectedSize(prevSize);
+      } else {
+        // If the previously selected size is not available for the newly selected color,
+        // select the first available size for the color
+        setSelectedSize(variant.sizes[0]?.size || "");
+      }
+    } else {
+      setSelectedSize("");
+    }
+
     setQuantity(1);
   };
 
@@ -193,7 +211,7 @@ const SingleProductPage = () => {
             />
           </ProductInfo>
           <div className="productdetail">
-            <Reviews />
+            <Reviews singleProduct={singleProduct} />
             <ShareProduct />
           </div>
           <div className="related">

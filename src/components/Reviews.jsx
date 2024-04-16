@@ -7,7 +7,7 @@ import CreateReview from "./CreateReview";
 
 const { Panel } = Collapse;
 
-const Reviews = () => {
+const Reviews = ({ singleProduct }) => {
   const { id } = useParams();
   const { reviews, loading, getReviewsByProductId } = useReviewContext();
   const productReviews = getReviewsByProductId(id);
@@ -61,7 +61,9 @@ const Reviews = () => {
     <div className="review">
       <Collapse accordion>
         <Panel header="Product Details" key="1">
-          <p>{text}</p>
+          <div
+            dangerouslySetInnerHTML={{ __html: singleProduct.description }}
+          />
         </Panel>
         <Panel header="Reviews" key="2">
           {reviewEntails()}

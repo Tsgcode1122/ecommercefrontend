@@ -13,11 +13,11 @@ export const ProductProvider = ({ children }) => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get("http://localhost:5005/api/products");
-        setProducts(response.data);
+        setProducts(response.data.reverse());
         setFeaturedProducts(
-          response.data.filter((product) => product.isNewRelease),
+          response.data.filter((product) => product.isFeatured),
         );
-        setLoading(false); // Set loading to false when data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
       }
@@ -25,9 +25,69 @@ export const ProductProvider = ({ children }) => {
 
     fetchProducts();
   }, []);
+  const uploadImage = async (file) => {
+    try {
+      const uniqueIdentifier =
+        Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+      const formData = new FormData();
+      formData.append(
+        "image",
+        file,
+        `${uniqueIdentifier}.${file.name.split(".").pop()}`,
+      );
 
+      formData.append("upload_preset", "lle08gce");
+      const response = await axios.post(
+        "http://localhost:5005/api/products/upload-image",
+        formData,
+      );
+
+      if (response.data && response.data.imageUrl) {
+        return response.data.imageUrl;
+      } else {
+        throw new Error("Failed to upload image to Cloudinary");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
+  const deleteImage = async (imageUrl) => {
+    try {
+      const publicId = imageUrl.split("/").pop().split(".")[0];
+      console.log(publicId);
+      await axios.delete(
+        `http://localhost:5005/api/products/images/${publicId}`,
+      );
+      console.log("Image deleted successfully");
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      throw error;
+    }
+  };
+
+  const createProduct = async (productData) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5005/api/products",
+        productData,
+      );
+      console.log("Product created:", response.data);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
+  };
   return (
-    <ProductContext.Provider value={{ loading, products, featuredProducts }}>
+    <ProductContext.Provider
+      value={{
+        loading,
+        products,
+        createProduct,
+        featuredProducts,
+        uploadImage,
+        deleteImage,
+      }}
+    >
       {children}
     </ProductContext.Provider>
   );
