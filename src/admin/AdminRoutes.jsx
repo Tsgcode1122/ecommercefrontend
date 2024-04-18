@@ -26,6 +26,7 @@ import CreateSalesPop from "./pages/CreateSalesPop";
 import Reviews from "./pages/Reviews";
 import TotalOrders from "./pages/TotalOrders";
 import CancelledOrders from "./pages/CancelledOrders";
+import EditProduct from "./components/EditProduct";
 
 const AdminRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const AdminRoutes = () => {
         {/* <Route path="/" element={<AdminDashboardPage />} /> */}
         <Route path="/products" element={<Products />} />
         <Route path="/manage-products" element={<ManageProduct />} />
+        <Route path="/edit-product/:id" element={<EditProduct />} />
         <Route path="/create-products" element={<CreateProduct />} />
         <Route path="/manage-orders" element={<ManageOrders />} />
         <Route path="/create-orders" element={<CreateOrders />} />

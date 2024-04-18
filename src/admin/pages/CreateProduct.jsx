@@ -124,7 +124,16 @@ const CreateProduct = () => {
       prevSizes.filter((size) => size.variantIndex !== index),
     );
   };
-  const COLORS = ["red", "black", "white", "blue", "yellow", "green", "orange"];
+  const COLORS = [
+    "red",
+    "black",
+    "white",
+    "blue",
+    "yellow",
+    "green",
+    "orange",
+    "pink",
+  ];
   const getColorOptions = (index) => {
     const usedColors = variants
       .filter((_, i) => i !== index)

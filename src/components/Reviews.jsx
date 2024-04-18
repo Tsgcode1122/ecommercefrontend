@@ -64,6 +64,7 @@ const Reviews = ({ singleProduct }) => {
           <div
             dangerouslySetInnerHTML={{ __html: singleProduct.description }}
           />
+          {/* {singleProduct.description} */}
         </Panel>
         <Panel header="Reviews" key="2">
           {reviewEntails()}

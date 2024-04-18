@@ -77,6 +77,28 @@ export const ProductProvider = ({ children }) => {
       console.error("Error creating product:", error);
     }
   };
+  const updateProduct = async (id, productData) => {
+    console.log(id);
+    console.log(productData);
+    try {
+      const response = await axios.put(
+        `http://localhost:5005/api/products/${id}`,
+        productData,
+      );
+    } catch (error) {
+      throw error;
+    }
+  };
+  const deleteProduct = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5005/api/products/${id}`,
+      );
+    } catch (error) {
+      console.error("Error updating product:", error);
+      throw error;
+    }
+  };
   return (
     <ProductContext.Provider
       value={{
@@ -86,6 +108,8 @@ export const ProductProvider = ({ children }) => {
         featuredProducts,
         uploadImage,
         deleteImage,
+        updateProduct,
+        deleteProduct,
       }}
     >
       {children}
