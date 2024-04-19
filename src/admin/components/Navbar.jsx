@@ -145,7 +145,7 @@ const Navbar = () => {
                 </Link>
               </Menu.Item>
               <Menu.Item key="13">
-                <Link to="/admin/cancel-orders" onClick={closeSidebar}>
+                <Link to="/admin/cancelled-orders" onClick={closeSidebar}>
                   Cancelled Orders
                 </Link>
               </Menu.Item>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 const colors = {
-  primary: "#25476A",
+  primary: "`#25476A`",
   secondary: "#03A9F4",
   white: "#FFFF",
   Support1: "#AB47BC",

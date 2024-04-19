@@ -26,7 +26,7 @@ const StyledModalInput = styled(Input)`
 
 const RegisterPage = () => {
   const { registerUser } = useUserContext();
-  const { sendEmail } = useSendEmail();
+  const { ResetSendEmail } = useSendEmail();
   const [form] = Form.useForm();
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -95,7 +95,7 @@ const RegisterPage = () => {
   };
 
   const sendVerificationCode = async (email) => {
-    const response = await sendEmail({ email });
+    const response = await ResetSendEmail({ email });
   };
 
   const verifyCode = async (verificationCode) => {

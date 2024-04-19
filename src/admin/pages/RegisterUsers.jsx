@@ -91,7 +91,7 @@ const RegisterUsers = () => {
   return (
     <>
       <Container>
-        <h1>Customers</h1>
+        <h1>Registered Users</h1>
         <StyledTableContainer>
           <StyledTable
             dataSource={customers}

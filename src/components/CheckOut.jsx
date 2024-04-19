@@ -231,7 +231,7 @@ const Checkout = ({ setOrderConfirmed, orderConfirmed }) => {
         } else if (paymentMethod === "directTransfer") {
           handleDirectModal();
         }
-        setOrderConfirmed(true);
+        // setOrderConfirmed(true);
         navigate("/success-message");
       } else {
         message.error("Failed to create order. Please try again.");
