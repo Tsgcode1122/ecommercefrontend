@@ -82,13 +82,13 @@ const Navbar = () => {
                 </Link>
               </Menu.Item>
             </SubMenu>
-            <SubMenu key="sub2" icon={<OrderedListOutlined />} title="Orders">
-              <Menu.Item key="3">
-                <Link to="/admin/manage-orders" onClick={closeSidebar}>
-                  Manage Orders
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="4">
+
+            <Menu.Item key="3" icon={<OrderedListOutlined />}>
+              <Link to="/admin/manage-orders" onClick={closeSidebar}>
+                Manage Orders
+              </Link>
+            </Menu.Item>
+            {/* <Menu.Item key="4">
                 <Link to="/admin/create-orders" onClick={closeSidebar}>
                   Create Orders
                 </Link>
@@ -97,8 +97,7 @@ const Navbar = () => {
                 <Link to="/admin/new-orders" onClick={closeSidebar}>
                   New Orders
                 </Link>
-              </Menu.Item>
-            </SubMenu>
+              </Menu.Item> */}
 
             <Menu.Item key="6" icon={<LineChartOutlined />}>
               <Link to="/admin/salesReport" onClick={closeSidebar}>

@@ -65,6 +65,19 @@ export const ProductProvider = ({ children }) => {
       throw error;
     }
   };
+  const deleteImag = async (imageUrl) => {
+    try {
+      const publicId = imageUrl;
+      console.log(publicId);
+      await axios.delete(
+        `http://localhost:5005/api/products/images/${publicId}`,
+      );
+      console.log("Image deleted successfully");
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      throw error;
+    }
+  };
 
   const createProduct = async (productData) => {
     try {
@@ -108,6 +121,7 @@ export const ProductProvider = ({ children }) => {
         featuredProducts,
         uploadImage,
         deleteImage,
+        deleteImag,
         updateProduct,
         deleteProduct,
       }}
