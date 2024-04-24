@@ -22,11 +22,12 @@ import Transactions from "./pages/Transactions";
 import Customers from "./pages/Customers";
 import CustomerRequests from "./pages/CustomerRequests";
 import RegisterUsers from "./pages/RegisterUsers";
-import CreateSalesPop from "./pages/CreateSalesPop";
+
 import Reviews from "./pages/Reviews";
 import TotalOrders from "./pages/TotalOrders";
 import CancelledOrders from "./pages/CancelledOrders";
 import EditProduct from "./components/EditProduct";
+import SalePopupManagement from "./pages/SalePopupManagement";
 
 const AdminRoutes = () => {
   return (
@@ -59,7 +60,7 @@ const AdminRoutes = () => {
         <Route path="/customers" element={<Customers />} />
         <Route path="/customers-Requests" element={<CustomerRequests />} />
         <Route path="/registered-users" element={<RegisterUsers />} />
-        <Route path="/create-sales-pop" element={<CreateSalesPop />} />
+        <Route path="/create-sales-pop" element={<SalePopupManagement />} />
 
         <Route path="/reviews" element={<Reviews />} />
         {/* Catch-all route for paths not found */}

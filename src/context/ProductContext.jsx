@@ -56,9 +56,11 @@ export const ProductProvider = ({ children }) => {
     try {
       const publicId = imageUrl.split("/").pop().split(".")[0];
       console.log(publicId);
-      await axios.delete(
-        `http://localhost:5005/api/products/images/${publicId}`,
-      );
+      await axios.delete(`http://localhost:5005/api/products/images/delete`, {
+        data: {
+          public_id: publicId,
+        },
+      });
       console.log("Image deleted successfully");
     } catch (error) {
       console.error("Error deleting image:", error);
@@ -69,9 +71,11 @@ export const ProductProvider = ({ children }) => {
     try {
       const publicId = imageUrl;
       console.log(publicId);
-      await axios.delete(
-        `http://localhost:5005/api/products/images/${publicId}`,
-      );
+      await axios.delete(`http://localhost:5005/api/products/images/delete`, {
+        data: {
+          public_id: publicId,
+        },
+      });
       console.log("Image deleted successfully");
     } catch (error) {
       console.error("Error deleting image:", error);
