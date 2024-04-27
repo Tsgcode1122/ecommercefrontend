@@ -58,6 +58,7 @@ const CartItems = ({ closeSidebar }) => {
                     Color: <ColorCircle color={item.selectedColor} />
                   </ItemDetail>
                   <ItemDetail>Dimension: {item.selectedSize}</ItemDetail>
+                  <ItemDetail>id: {item.id}</ItemDetail>
                   <ItemDetail>Price: ${item.displayedPrice}</ItemDetail>
                   <ItemDetail>Stock: {item.availableStock}</ItemDetail>
 

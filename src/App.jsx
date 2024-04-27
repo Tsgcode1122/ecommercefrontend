@@ -20,6 +20,7 @@ import WishList from "./pages/WishList";
 import MyOders from "./pages/MyOders";
 import ProtectedAdminDashboardPage from "./admin/ProtectedAdminDashboardPage";
 import { useNavigate } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
 const App = () => {
   return (
     <BrowserRouter>
@@ -35,6 +36,7 @@ const AppContent = () => {
 
   return (
     <>
+      <GlobalStyle />
       {!isAdminPage && <Navbar />}
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -80,5 +82,13 @@ const InvalidPath = () => {
     />
   );
 };
-
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #EDF1F6;
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Roboto', sans-serif;
+ 
+  }
+`;
 export default App;

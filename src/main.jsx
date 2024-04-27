@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
+
 import "./index.css";
 import { ProductProvider } from "./context/ProductContext.jsx";
 import { ReviewProvider } from "./context/ReviewContext.jsx";
@@ -13,6 +13,7 @@ import { ResetPasswordProvider } from "./context/ResetPasswordContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 
 import { SalePopupProvider } from "./context/SalePopupContext.jsx";
+import App from "./App.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(

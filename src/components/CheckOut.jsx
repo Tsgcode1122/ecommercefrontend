@@ -211,6 +211,7 @@ const Checkout = ({ setOrderConfirmed, orderConfirmed }) => {
             Price: item.displayedPrice,
             Quantity: item.quantity,
             Image: item.productImage,
+            itemId: item.id,
           },
         })),
         formData: values,

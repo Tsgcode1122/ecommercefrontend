@@ -65,7 +65,7 @@ const AddToCartButton = ({
       availableStock,
     };
     const itemId = singleProduct._id + selectedColor + selectedSize;
-
+    console.log(itemId);
     const totalQuantityInCart = cart.reduce((total, item) => {
       if (
         item.id === itemId &&

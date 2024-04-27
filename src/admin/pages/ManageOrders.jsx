@@ -10,6 +10,7 @@ import {
   Input,
   Menu,
   Tabs,
+  message,
 } from "antd";
 import axios from "axios";
 
@@ -20,6 +21,7 @@ const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [deliveryModalVisible, setDeliveryModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("pending");
   const [orderStatus, setOrderStatus] = useState("pending");
@@ -117,6 +119,7 @@ const ManageOrders = () => {
               <Menu.Item key="view">View Order</Menu.Item>
               <Menu.Item key="edit">Edit Order</Menu.Item>
               <Menu.Item key="delete">Delete Order</Menu.Item>
+              <Menu.Item key="delivery">Shipping Details</Menu.Item>
             </Menu>
           }
         >
@@ -129,6 +132,7 @@ const ManageOrders = () => {
   const handleAction = (e, order) => {
     const action = e.key;
     setSelectedOrder(order);
+    console.log(selectedOrder);
     if (action === "view") {
       setViewModalVisible(true);
     } else if (action === "edit") {
@@ -138,11 +142,30 @@ const ManageOrders = () => {
       setEditModalVisible(true);
     } else if (action === "delete") {
       // Implement delete order functionality
+    } else if (action === "delivery") {
+      setSelectedOrder(order);
+      setDeliveryModalVisible(true);
     }
   };
 
-  const handleEditSubmit = () => {
-    // Send PUT request to backend with updated paymentStatus and orderStatus
+  const handleEditSubmit = async () => {
+    const orderId = selectedOrder._id;
+    console.log(orderId);
+    try {
+      const response = await axios.put(
+        "http://localhost:5005/api/orders/updateOrder",
+        {
+          data: {
+            orderId: orderId,
+            paymentStatus,
+            orderStatus,
+          },
+        },
+      );
+      message.success("Order  updated");
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
     console.log("Payment Status:", paymentStatus);
     console.log("Order Status:", orderStatus);
     setEditModalVisible(false);
@@ -253,7 +276,30 @@ const ManageOrders = () => {
             ))}
         </ul>
       </Modal>
-
+      <Modal
+        title="Shipping Details"
+        visible={deliveryModalVisible}
+        onCancel={() => setDeliveryModalVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setDeliveryModalVisible(false)}>
+            Close
+          </Button>,
+        ]}
+      >
+        <div>
+          <p>Country: {selectedOrder?.formData.country}</p>
+          <p>Email: {selectedOrder?.formData.email}</p>
+          <p>Phone Number: {selectedOrder?.formData.phone}</p>
+          <p>State: {selectedOrder?.formData.state}</p>
+          <p>Street Address: {selectedOrder?.formData.streetAddress}</p>
+          <p>Town/City: {selectedOrder?.formData.townCity}</p>
+        </div>
+        <div>
+          <h3>Payment & Shipping Method</h3>
+          <p>Payment Method: {selectedOrder?.paymentMethod}</p>
+          <p>Shipping Method: {selectedOrder?.shippingMethod}</p>
+        </div>
+      </Modal>
       {/* Edit Order Details Modal */}
       <Modal
         title="Edit Order"

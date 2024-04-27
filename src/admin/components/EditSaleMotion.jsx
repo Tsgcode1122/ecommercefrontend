@@ -1,12 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, DatePicker, Button, Switch, message } from "antd";
 import axios from "axios";
+import moment from "moment"; // Import moment library
 
 const { RangePicker } = DatePicker;
 
-const OnSaleMotionSlide = () => {
+const EditSaleMotion = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [motion, setMotion] = useState(null);
+
+  useEffect(() => {
+    fetchMotion();
+  }, []);
+
+  const fetchMotion = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5005/api/onSaleMotionSlide",
+      );
+      const motionData = response.data; // Assuming the response contains motion data
+      setMotion(motionData);
+
+      // Set initial values in the form
+      form.setFieldsValue({
+        text: motionData.text,
+        dateRange: [moment(motionData.startDate), moment(motionData.endDate)],
+        enabled: motionData.enabled,
+      });
+    } catch (error) {
+      console.error("Error fetching sale motion:", error);
+      message.error("Failed to fetch sale motion");
+    }
+  };
 
   const onFinish = async (values) => {
     try {
@@ -16,16 +42,19 @@ const OnSaleMotionSlide = () => {
       const formattedStartDate = startDate.format("YYYY-MM-DD");
       const formattedEndDate = endDate.format("YYYY-MM-DD");
 
-      // Send data to backend with formatted date range
-      await axios.post("http://localhost:5005/api/onSaleMotionSlide", {
-        ...values,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-      });
-      message.success("On sale motion slide created successfully");
+      // Send updated data to backend
+      await axios.put(
+        `http://localhost:5005/api/onSaleMotionSlide/${motion._id}`,
+        {
+          ...values,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
+        },
+      );
+      message.success("Sale motion updated successfully");
     } catch (error) {
-      console.error("Error updating on sale motion slide:", error);
-      message.error("Failed to update on sale motion slide");
+      console.error("Error updating sale motion:", error);
+      message.error("Failed to update sale motion");
     } finally {
       setLoading(false);
     }
@@ -57,11 +86,11 @@ const OnSaleMotionSlide = () => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" loading={loading}>
-          Create Sales Motion
+          Update
         </Button>
       </Form.Item>
     </Form>
   );
 };
 
-export default OnSaleMotionSlide;
+export default EditSaleMotion;
