@@ -16,8 +16,8 @@ import CreateProduct from "./pages/CreateProduct";
 import ManageOrders from "./pages/ManageOrders";
 import NewOrders from "./pages/NewOrders";
 import CreateDiscount from "./pages/CreateDiscount";
-import CreateCoupon from "./pages/CreateCoupon";
-import CreateSalesPercentage from "./pages/CreateSalesPercentage";
+import CreateCoupon from "./components/CreateCoupon";
+
 import Transactions from "./pages/Transactions";
 import Customers from "./pages/Customers";
 import CustomerRequests from "./pages/CustomerRequests";
@@ -28,6 +28,8 @@ import TotalOrders from "./pages/TotalOrders";
 import CancelledOrders from "./pages/CancelledOrders";
 import EditProduct from "./components/EditProduct";
 import SalePopupManagement from "./pages/SalePopupManagement";
+import DiscountManagement from "./pages/DiscountManagement";
+import PercentageManagement from "./pages/PercentageManagement";
 
 const AdminRoutes = () => {
   return (
@@ -48,10 +50,10 @@ const AdminRoutes = () => {
         <Route path="/salesReport" element={<SalesReport />} />
 
         <Route path="/create-discount" element={<CreateDiscount />} />
-        <Route path="/create-coupon" element={<CreateCoupon />} />
+        <Route path="/create-coupon" element={<DiscountManagement />} />
         <Route
           path="/create-sales-percentage"
-          element={<CreateSalesPercentage />}
+          element={<PercentageManagement />}
         />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/page-visits" element={<PageVisits />} />

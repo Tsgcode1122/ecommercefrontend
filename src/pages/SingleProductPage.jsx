@@ -3,13 +3,14 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { CiHeart } from "react-icons/ci";
 import { useProductContext } from "../context/ProductContext";
-import { calculateSalePrice } from "../constant/Saleprice";
+
 import Reviews from "../components/Reviews";
 import ShareProduct from "../components/ShareProduct";
 import RelatedProducts from "../components/RelatedProducts";
 import { FaPlus, FaMinus } from "react-icons/fa";
 import AddToCartButton from "../constant/AddToCartButton";
 import AddToWishlist from "../components/AddToWishlist";
+import { calculateSalePrice } from "../constant/Saleprice";
 const SingleProductPage = () => {
   const { id } = useParams();
   const { loading, products } = useProductContext();

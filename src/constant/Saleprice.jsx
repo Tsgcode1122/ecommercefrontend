@@ -1,5 +1,8 @@
-// Function to calculate sale price
+import React, { useContext } from "react";
+import PercentageContext from "../context/PercentageContext";
+
 export const calculateSalePrice = (price) => {
-  // Calculate 25% off the original price
-  return Math.round(price - (25 / 100) * price);
+  const percentage = useContext(PercentageContext);
+
+  return Math.round(price - (percentage / 100) * price);
 };

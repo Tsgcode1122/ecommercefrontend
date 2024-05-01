@@ -118,7 +118,7 @@ const ManageOrders = () => {
             <Menu onClick={(e) => handleAction(e, record)}>
               <Menu.Item key="view">View Order</Menu.Item>
               <Menu.Item key="edit">Edit Order</Menu.Item>
-              <Menu.Item key="delete">Delete Order</Menu.Item>
+              {/* <Menu.Item key="delete">Delete Order</Menu.Item> */}
               <Menu.Item key="delivery">Shipping Details</Menu.Item>
             </Menu>
           }
@@ -152,16 +152,12 @@ const ManageOrders = () => {
     const orderId = selectedOrder._id;
     console.log(orderId);
     try {
-      const response = await axios.put(
-        "http://localhost:5005/api/orders/updateOrder",
-        {
-          data: {
-            orderId: orderId,
-            paymentStatus,
-            orderStatus,
-          },
-        },
-      );
+      await axios.put("http://localhost:5005/api/orders/updateOrder", {
+        orderId: orderId,
+        paymentStatus,
+        orderStatus,
+      });
+      fetchOrders();
       message.success("Order  updated");
     } catch (error) {
       console.error("Error fetching orders:", error);

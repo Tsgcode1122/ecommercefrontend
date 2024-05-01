@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, DatePicker, Button, Switch, message } from "antd";
 import axios from "axios";
-import moment from "moment"; // Import moment library
-
-const { RangePicker } = DatePicker;
+import moment from "moment";
 
 const EditSaleMotion = () => {
   const [form] = Form.useForm();
@@ -19,13 +17,14 @@ const EditSaleMotion = () => {
       const response = await axios.get(
         "http://localhost:5005/api/onSaleMotionSlide",
       );
-      const motionData = response.data; // Assuming the response contains motion data
+      const motionData = response.data;
       setMotion(motionData);
 
       // Set initial values in the form
       form.setFieldsValue({
         text: motionData.text,
-        dateRange: [moment(motionData.startDate), moment(motionData.endDate)],
+        startDate: moment(motionData.startDate),
+        endDate: moment(motionData.endDate),
         enabled: motionData.enabled,
       });
     } catch (error) {
@@ -37,18 +36,15 @@ const EditSaleMotion = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      // Format date range
-      const [startDate, endDate] = values.dateRange;
-      const formattedStartDate = startDate.format("YYYY-MM-DD");
-      const formattedEndDate = endDate.format("YYYY-MM-DD");
+      const { startDate, endDate } = values;
 
-      // Send updated data to backend
+      // Send updated data to backend with formatted date
       await axios.put(
         `http://localhost:5005/api/onSaleMotionSlide/${motion._id}`,
         {
           ...values,
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
+          startDate: startDate.format("YYYY-MM-DD"),
+          endDate: endDate.format("YYYY-MM-DD"),
         },
       );
       message.success("Sale motion updated successfully");
@@ -70,11 +66,18 @@ const EditSaleMotion = () => {
         <Input.TextArea />
       </Form.Item>
       <Form.Item
-        name="dateRange"
-        label="Start and End Date"
-        rules={[{ required: true, message: "Please select the date range" }]}
+        name="startDate"
+        label="Start Date"
+        rules={[{ required: true, message: "Please select the start date" }]}
       >
-        <RangePicker />
+        <DatePicker />
+      </Form.Item>
+      <Form.Item
+        name="endDate"
+        label="End Date"
+        rules={[{ required: true, message: "Please select the end date" }]}
+      >
+        <DatePicker />
       </Form.Item>
       <Form.Item
         name="enabled"

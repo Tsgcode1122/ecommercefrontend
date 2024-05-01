@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Form, Input, DatePicker, Button, Switch, message } from "antd";
 import axios from "axios";
 
-const { RangePicker } = DatePicker;
-
 const OnSaleMotionSlide = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -11,16 +9,14 @@ const OnSaleMotionSlide = () => {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      // Format date range
-      const [startDate, endDate] = values.dateRange;
-      const formattedStartDate = startDate.format("YYYY-MM-DD");
-      const formattedEndDate = endDate.format("YYYY-MM-DD");
+      // Extract start and end dates from the values object
+      const { startDate, endDate } = values;
 
       // Send data to backend with formatted date range
       await axios.post("http://localhost:5005/api/onSaleMotionSlide", {
         ...values,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
+        startDate: startDate.format("YYYY-MM-DD"),
+        endDate: endDate.format("YYYY-MM-DD"),
       });
       message.success("On sale motion slide created successfully");
     } catch (error) {
@@ -41,11 +37,18 @@ const OnSaleMotionSlide = () => {
         <Input.TextArea />
       </Form.Item>
       <Form.Item
-        name="dateRange"
-        label="Start and End Date"
-        rules={[{ required: true, message: "Please select the date range" }]}
+        name="startDate"
+        label="Start Date"
+        rules={[{ required: true, message: "Please select the start date" }]}
       >
-        <RangePicker />
+        <DatePicker />
+      </Form.Item>
+      <Form.Item
+        name="endDate"
+        label="End Date"
+        rules={[{ required: true, message: "Please select the end date" }]}
+      >
+        <DatePicker />
       </Form.Item>
       <Form.Item
         name="enabled"

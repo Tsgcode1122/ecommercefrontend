@@ -106,11 +106,11 @@ const Navbar = () => {
             </Menu.Item>
 
             <SubMenu key="sub4" icon={<TagOutlined />} title="Discount">
-              <Menu.Item key="7">
+              {/* <Menu.Item key="7">
                 <Link to="/admin/create-discount" onClick={closeSidebar}>
                   Create discount
                 </Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="8">
                 <Link to="/admin/create-coupon" onClick={closeSidebar}>
                   Create Coupon
