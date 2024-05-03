@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { CiHeart } from "react-icons/ci";
@@ -11,7 +11,11 @@ import { FaPlus, FaMinus } from "react-icons/fa";
 import AddToCartButton from "../constant/AddToCartButton";
 import AddToWishlist from "../components/AddToWishlist";
 import { calculateSalePrice } from "../constant/Saleprice";
+import PercentageContext from "../context/PercentageContext";
+
 const SingleProductPage = () => {
+  const percentage = useContext(PercentageContext);
+
   const { id } = useParams();
   const { loading, products } = useProductContext();
   const singleProduct = products.find((product) => product._id === id);
@@ -123,6 +127,7 @@ const SingleProductPage = () => {
                           .find((variant) => variant.color === selectedColor)
                           ?.sizes.find((size) => size.size === selectedSize)
                           ?.price || singleProduct.price,
+                        percentage,
                       )}
                     </span>
                     <span className="old-price">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useProductContext } from "../context/ProductContext";
 import styled from "styled-components";
 import { BsCartPlus } from "react-icons/bs";
@@ -7,7 +7,9 @@ import { CiHeart } from "react-icons/ci";
 import { calculateSalePrice } from "../constant/Saleprice";
 import { Link } from "react-router-dom";
 import AddToWishlist from "../components/AddToWishlist";
+import PercentageContext from "../context/PercentageContext";
 const FeaturedProducts = () => {
+  const percentage = useContext(PercentageContext);
   const { featuredProducts } = useProductContext();
 
   return (
@@ -34,7 +36,7 @@ const FeaturedProducts = () => {
                 {product.onSale ? (
                   <SalePrice>
                     <span className="new-price">
-                      ${calculateSalePrice(product.price)}
+                      ${calculateSalePrice(product.price, percentage)}
                     </span>
                     <span className="old-price">${product.price}</span>
                   </SalePrice>

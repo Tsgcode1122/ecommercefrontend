@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { calculateSalePrice } from "../constant/Saleprice";
 import { useCartContext } from "../context/CartContext";
-
+import PercentageContext from "../context/PercentageContext";
 const AddToCartButton = ({
   singleProduct,
   selectedColor,
@@ -10,6 +10,7 @@ const AddToCartButton = ({
   quantity,
 }) => {
   const { addToCart, cart } = useCartContext();
+  const percentage = useContext(PercentageContext);
   const handleAddToCart = () => {
     const getDisplayedPrice = (singleProduct, selectedColor, selectedSize) => {
       const variant = singleProduct.variants.find(
@@ -19,7 +20,7 @@ const AddToCartButton = ({
         const size = variant.sizes.find((size) => size.size === selectedSize);
         if (size) {
           const price = singleProduct.onSale
-            ? calculateSalePrice(size.price)
+            ? calculateSalePrice(size.price, percentage)
             : size.price;
           return price;
         }

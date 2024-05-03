@@ -4,32 +4,45 @@ import { useCartContext } from "../context/CartContext";
 import CouponCodeForm from "./CouponCodeForm";
 import TotalInCart from "./TotalInCart";
 import useTotalPrice from "./useTotalPrice";
-
+import axios from "axios";
+import LoginPage from "../pages/LoginPage";
+import { message } from "antd";
 const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
   const [discount, setDiscount] = useState(0);
+  const [couponValidity, setCouponValidity] = useState(0);
+  const [status, setStatus] = useState("");
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useCartContext();
-  const totalQuantity = TotalInCart(); //  TotalInCart component to calculate total quantity
-
+  const totalQuantity = TotalInCart(); // TotalInCart component to calculate total quantity
   const totalPrice = useTotalPrice(cart, discount);
-
-  let couponValid = 3;
-
+  let couponValid = couponValidity;
+  console.log(status);
+  console.log(couponValid);
   // Function to apply the coupon code and calculate the discount
-  const applyCoupon = (couponCode) => {
-    if (couponCode === "TOSIN2023") {
-      // Apply 2% discount if the coupon code is valid
-      if (totalQuantity >= couponValid) {
-        setDiscount(0.02); // 2% discount
-      } else {
-        alert(
-          `Coupon code is valid but requires at least ${couponValid} items in cart.`,
-        );
-      }
+  const applyCoupon = async (couponCode) => {
+    let response;
+    try {
+      response = await axios.post(
+        "http://localhost:5005/api/discountRoutes/apply-coupon",
+        { code: couponCode, totalQuantity },
+      );
+      setCouponValidity(response.data.discount);
+    } catch (error) {
+      console.error("Error applying coupon code:", error);
+      message.error("Invalid coupon code.");
+      return;
+    }
+
+    if (response.status === 200) {
+      setDiscount(response.data.discount);
+      message.success("Coupon applied successfully");
     } else {
-      alert("Invalid coupon code.");
+      message.error(
+        `Coupon code is valid but requires at least ${response.data.minimumOrder} items in cart.`,
+      );
     }
   };
+  // Function to apply the coupon code and calculate the discount
 
   // handle increase
   const handleIncreaseQuantity = (itemId) => {
@@ -37,7 +50,7 @@ const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
     if (totalQuantity <= couponValid && discount > 0) {
       // Reset discount if the threshold is not met
       setDiscount(0);
-      alert("Coupon discount has been removed due to quantity change.");
+      message.error("Coupon discount has been removed due to quantity change.");
     }
   };
 
@@ -58,10 +71,12 @@ const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
       alert("Coupon discount has been removed due to quantity change.");
     }
   };
+
   // Update total price in parent component
   useEffect(() => {
     setTotalPrice(totalPrice);
   }, [totalPrice, setTotalPrice]);
+
   return (
     <Container>
       <h2>Cart Summary</h2>
@@ -76,8 +91,6 @@ const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
               </ItemDetail>
               <ItemDetail>Dimension: {item.selectedSize}</ItemDetail>
               <ItemDetail>Price: ${item.displayedPrice}</ItemDetail>
-              {/* <ItemDetail>Stock: {item.availableStock}</ItemDetail> */}
-
               <QuantityControl>
                 <button onClick={() => handleDecreaseQuantity(item.id)}>
                   -
@@ -87,7 +100,6 @@ const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
                   +
                 </button>
               </QuantityControl>
-
               <ItemDetail>
                 <img src={item.productImage} alt={item.productName} />
               </ItemDetail>
@@ -101,11 +113,12 @@ const CartItemCheckoutSummary = ({ closeSummary, setTotalPrice }) => {
       {/* Render CouponCodeForm component */}
       <CouponCodeForm applyCoupon={applyCoupon} />
       <hr />
-
       <TotalPrice>Total Price: ${totalPrice}</TotalPrice>
     </Container>
   );
 };
+
+// Styled components and other code remain the same
 
 const Container = styled.div`
   padding: 20px;

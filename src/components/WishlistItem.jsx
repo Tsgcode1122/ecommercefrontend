@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 
 import { message, Alert, Empty, Button, Space, Spin } from "antd";
@@ -7,8 +7,10 @@ import { IoEyeOutline } from "react-icons/io5";
 import { calculateSalePrice } from "../constant/Saleprice";
 import { useWishlistContext } from "../context/WishlistContext";
 import { useUserData } from "../context/UserDataContext";
-
+import PercentageContext from "../context/PercentageContext";
 const WishlistItem = () => {
+  const percentage = useContext(PercentageContext);
+
   const { getWishlist, removeFromWishlist, clearWishlist } =
     useWishlistContext();
   const [wishlistProducts, setWishlistProducts] = useState([]);
@@ -119,6 +121,7 @@ const WishlistItem = () => {
                               {calculateSalePrice(
                                 wishlistItem.product &&
                                   wishlistItem.product.price,
+                                percentage,
                               )}
                             </span>
                             <span className="old-price">

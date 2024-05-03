@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useParams } from "react-router-dom"; // Assuming you're using React Router for navigation
 
 import { useProductContext } from "../context/ProductContext";
@@ -8,7 +8,9 @@ import { IoEyeOutline } from "react-icons/io5";
 import { CiHeart } from "react-icons/ci";
 import AddToWishlist from "../components/AddToWishlist";
 import { calculateSalePrice } from "../constant/Saleprice";
+import PercentageContext from "../context/PercentageContext";
 const RelatedProducts = () => {
+  const percentage = useContext(PercentageContext);
   const { id } = useParams();
   const { products } = useProductContext();
 
@@ -55,7 +57,7 @@ const RelatedProducts = () => {
                     {product.onSale ? (
                       <SalePrice>
                         <span className="new-price">
-                          ${calculateSalePrice(product.price)}
+                          ${calculateSalePrice(product.price, percentage)}
                         </span>
                         <span className="old-price">${product.price}</span>
                       </SalePrice>

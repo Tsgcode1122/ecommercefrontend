@@ -15,11 +15,12 @@ import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { SalePopupProvider } from "./context/SalePopupContext.jsx";
 import App from "./App.jsx";
 import { PercentageProvider } from "./context/PercentageContext.jsx";
+import { CouponCodeProvider } from "./context/CouponCodeContext.jsx";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <SalePopupProvider>
-    <PercentageProvider>
+  <CouponCodeProvider>
+    <SalePopupProvider>
       <ResetPasswordProvider>
         <ForgetPasswordProvider>
           <UserDataProvider>
@@ -28,9 +29,11 @@ root.render(
                 <ProductProvider>
                   <ReviewProvider>
                     <CartProvider>
-                      <WishlistProvider>
-                        <App />
-                      </WishlistProvider>
+                      <PercentageProvider>
+                        <WishlistProvider>
+                          <App />
+                        </WishlistProvider>
+                      </PercentageProvider>
                     </CartProvider>
                   </ReviewProvider>
                 </ProductProvider>
@@ -39,6 +42,6 @@ root.render(
           </UserDataProvider>
         </ForgetPasswordProvider>
       </ResetPasswordProvider>
-    </PercentageProvider>
-  </SalePopupProvider>,
+    </SalePopupProvider>
+  </CouponCodeProvider>,
 );

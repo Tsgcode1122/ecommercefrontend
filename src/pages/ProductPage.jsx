@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useProductContext } from "../context/ProductContext";
 import styled from "styled-components";
 import { Spin } from "antd";
@@ -8,11 +8,11 @@ import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { calculateSalePrice } from "../constant/Saleprice";
 import AddToWishlist from "../components/AddToWishlist";
-
+import PercentageContext from "../context/PercentageContext";
 const ProductPage = () => {
   const { products } = useProductContext();
   const [loading, setLoading] = useState(true);
-
+  const percentage = useContext(PercentageContext);
   useEffect(() => {
     if (products.length > 0) {
       setLoading(false);
@@ -44,7 +44,7 @@ const ProductPage = () => {
                   {product.onSale ? (
                     <SalePrice>
                       <span className="new-price">
-                        ${calculateSalePrice(product.price)}
+                        ${calculateSalePrice(product.price, percentage)}
                       </span>
                       <span className="old-price">${product.price}</span>
                     </SalePrice>
