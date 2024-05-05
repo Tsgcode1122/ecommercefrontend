@@ -31,7 +31,7 @@ const SalePopupModal = () => {
       () => {
         fetchPopupData();
       },
-      3 * 60 * 1000,
+      3 * 60 * 100000,
     ); // 30 minutes in milliseconds
 
     return () => {

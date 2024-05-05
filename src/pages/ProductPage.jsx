@@ -1,30 +1,90 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useProductContext } from "../context/ProductContext";
 import styled from "styled-components";
 import { Spin } from "antd";
-import { BsCartPlus } from "react-icons/bs";
 import { IoEyeOutline } from "react-icons/io5";
-import { CiHeart } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { calculateSalePrice } from "../constant/Saleprice";
 import AddToWishlist from "../components/AddToWishlist";
+import { useProductContext } from "../context/ProductContext";
 import PercentageContext from "../context/PercentageContext";
+
 const ProductPage = () => {
   const { products } = useProductContext();
   const [loading, setLoading] = useState(true);
   const percentage = useContext(PercentageContext);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sortOption, setSortOption] = useState("None");
+
   useEffect(() => {
     if (products.length > 0) {
       setLoading(false);
+      setFilteredProducts(products);
     }
   }, [products]);
 
+  const filterProducts = () => {
+    let filtered = products.filter((product) => {
+      if (
+        (selectedCategory === "All" ||
+          product.category.includes(selectedCategory)) &&
+        (searchQuery === "" ||
+          product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    if (sortOption === "LowToHigh") {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sortOption === "HighToLow") {
+      filtered.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "OnSale") {
+      filtered = filtered.filter((product) => product.onSale);
+    }
+
+    setFilteredProducts(filtered);
+  };
+
+  useEffect(() => {
+    filterProducts();
+  }, [searchQuery, selectedCategory, sortOption]);
+
   return (
     <Wrapper>
-      <h2>All Products</h2>
+      <FilterContainer>
+        <SearchInput
+          type="text"
+          placeholder="Search by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <CategorySelect
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="All">All Categories</option>
+          <option value="Men Wear">Men Wear</option>
+          <option value="Women Wear">Women Wear</option>
+          <option value="Top">Top</option>
+          <option value="Short">Short</option>
+        </CategorySelect>
+        <SortSelect
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+        >
+          <option value="None">Sort by</option>
+          <option value="LowToHigh">Price: Low to High</option>
+          <option value="HighToLow">Price: High to Low</option>
+          <option value="OnSale">On Sale</option>
+        </SortSelect>
+      </FilterContainer>
+
       <Spin spinning={loading} size="large">
         <ProductContainer>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard key={product._id}>
               {product.onSale && <OnSaleLabel>On Sale</OnSaleLabel>}
               <img src={product.images[0]} alt={product.name} />
@@ -81,6 +141,31 @@ const Wrapper = styled.div`
     margin-bottom: 20px;
     color: black;
   }
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const SearchInput = styled.input`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+`;
+
+const CategorySelect = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+`;
+
+const SortSelect = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 `;
 
 const ProductContainer = styled.div`

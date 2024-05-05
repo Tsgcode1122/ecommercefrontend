@@ -98,12 +98,25 @@ const Navbar = () => {
                   New Orders
                 </Link>
               </Menu.Item> */}
+            <SubMenu key="sub5" icon={<FileOutlined />} title="Reports">
+              <Menu.Item key="6">
+                <Link to="/admin/salesReport" onClick={closeSidebar}>
+                  Sales Report
+                </Link>
+              </Menu.Item>
 
-            <Menu.Item key="6" icon={<LineChartOutlined />}>
-              <Link to="/admin/salesReport" onClick={closeSidebar}>
-                Sales Report
-              </Link>
-            </Menu.Item>
+              <Menu.Item key="11">
+                <Link to="/admin/total-orders" onClick={closeSidebar}>
+                  Orders Report
+                </Link>
+              </Menu.Item>
+
+              <Menu.Item key="12">
+                <Link to="/admin/page-visits" onClick={closeSidebar}>
+                  Page visitors
+                </Link>
+              </Menu.Item>
+            </SubMenu>
 
             <SubMenu key="sub4" icon={<TagOutlined />} title="Discount">
               {/* <Menu.Item key="7">
@@ -125,31 +138,11 @@ const Navbar = () => {
                 </Link>
               </Menu.Item>
             </SubMenu>
-            <SubMenu key="sub5" icon={<FileOutlined />} title="Reports">
-              <Menu.Item key="10">
-                <Link to="/admin/transactions" onClick={closeSidebar}>
-                  Transactions
-                </Link>
-              </Menu.Item>
-
-              <Menu.Item key="11">
-                <Link to="/admin/total-orders" onClick={closeSidebar}>
-                  Total Orders
-                </Link>
-              </Menu.Item>
-
-              <Menu.Item key="12">
-                <Link to="/admin/page-visits" onClick={closeSidebar}>
-                  Page visitors
-                </Link>
-              </Menu.Item>
-              <Menu.Item key="13">
-                <Link to="/admin/cancelled-orders" onClick={closeSidebar}>
-                  Cancelled Orders
-                </Link>
-              </Menu.Item>
-            </SubMenu>
-
+            <Menu.Item key="13" icon={<LineChartOutlined />}>
+              <Link to="/admin/cancelled-orders" onClick={closeSidebar}>
+                Cancelled Orders
+              </Link>
+            </Menu.Item>
             <Menu.Item key="14" icon={<UserOutlined />}>
               <Link to="/admin/customers" onClick={closeSidebar}>
                 Customers

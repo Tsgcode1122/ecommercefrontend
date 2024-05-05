@@ -128,7 +128,7 @@ const Navbar = () => {
           </CartIconInner>
         </CartIcon>
       </StyledNavbar>
-      <div style={{ height: "5rem" }}></div>
+      <div style={{ height: "2rem" }}></div>
 
       <Sidebar isOpen={isSidebarOpen} ref={sidebarRef}>
         <CloseButton onClick={closeSidebar}>Close</CloseButton>

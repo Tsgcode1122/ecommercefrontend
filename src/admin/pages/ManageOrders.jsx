@@ -183,7 +183,7 @@ const ManageOrders = () => {
               dataSource={filteredOrders}
               columns={columns}
               scroll={{ x: "auto" }}
-              pagination={{ pageSize: 10 }}
+              pagination={{ pageSize: 7 }}
             />
           </TableContainer>
         </TabPane>
@@ -339,7 +339,7 @@ const Container = styled.div`
 `;
 
 const StyledTabs = styled(Tabs)`
-  height: calc(100vh - 180px); /* Adjust height according to your layout */
+  /* height: calc(100vh - 180px);  */
   overflow: hidden;
 `;
 

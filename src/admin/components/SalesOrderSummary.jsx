@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Row, Col, Card } from "antd";
 import styled from "styled-components";
 import {
@@ -74,6 +75,47 @@ const Value = styled.span`
 `;
 
 const SalesOrderSummary = () => {
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [cancelledOrders, setCancelledOrders] = useState(0);
+  const siteVisitors = 10000; // Hardcoded value for site visitors
+
+  useEffect(() => {
+    fetchOrderData();
+  }, []);
+
+  const fetchOrderData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5005/api/orders");
+
+      // Calculate total orders
+      const totalOrdersCount = response.data.length;
+      setTotalOrders(totalOrdersCount);
+      const completedOrders = response.data.filter(
+        (order) => order.paymentStatus === "completed",
+      );
+      // Calculate total sales (overall total order sales)
+      const totalSalesAmount = completedOrders.reduce(
+        (total, order) => total + order.totalPrice,
+        0,
+      );
+      setTotalSales(totalSalesAmount);
+      // const totalSalesAmount = completedOrders.reduce(
+      //   (total, order) => total + order.totalPrice,
+      //   0,
+      // );
+      // setTotalSales(totalSalesAmount);
+
+      // Calculate cancelled orders
+      const cancelledOrdersCount = response.data.filter(
+        (order) => order.orderStatus === "cancelled",
+      ).length;
+      setCancelledOrders(cancelledOrdersCount);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
+  };
+
   return (
     <div>
       <Container>
@@ -82,7 +124,7 @@ const SalesOrderSummary = () => {
             <IconWrapper>
               <OrderedListOutlined />
             </IconWrapper>
-            <Value>1000</Value>
+            <Value>{totalOrders}</Value>
             <p>Total Orders</p>
           </ContentContainer>
           <ImageContainer>
@@ -95,7 +137,7 @@ const SalesOrderSummary = () => {
             <IconWrapper>
               <ShoppingOutlined />
             </IconWrapper>
-            <Value>$5000</Value>
+            <Value>${totalSales}</Value>
             <p>Total Sales</p>
           </ContentContainer>
           <ImageContainer>
@@ -108,7 +150,7 @@ const SalesOrderSummary = () => {
             <IconWrapper>
               <UserOutlined />
             </IconWrapper>
-            <Value>10000</Value>
+            <Value>{siteVisitors}</Value>
             <p>Site Visitors</p>
           </ContentContainer>
           <ImageContainer>
@@ -121,8 +163,8 @@ const SalesOrderSummary = () => {
             <IconWrapper>
               <CloseCircleOutlined />
             </IconWrapper>
-            <Value>50</Value>
-            <p>Cancelled Order</p>
+            <Value>{cancelledOrders}</Value>
+            <p>Cancelled Orders</p>
           </ContentContainer>
           <ImageContainer>
             <img src={lineChart} alt="Line Chart" />

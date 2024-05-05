@@ -44,9 +44,11 @@ const FeaturedProducts = () => {
                   <p>${product.price}</p>
                 )}
               </div>
-              {product.stock === 0 && (
-                <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
-              )}
+              {product.variants.length > 0 &&
+                product.variants[0].sizes.length > 0 &&
+                product.variants[0].sizes[0].stock === 0 && (
+                  <OutOfStock className="out-of-stock">Out of stock</OutOfStock>
+                )}
             </Link>
           </ProductCard>
         ))}
@@ -57,7 +59,7 @@ const FeaturedProducts = () => {
 
 const Wrapper = styled.div`
   max-width: 1200px;
-  margin: 0 auto;
+  margin-bottom: 5rem;
   padding: 20px;
 
   h2 {
